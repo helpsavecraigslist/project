@@ -14,6 +14,10 @@ export class APIStack extends Stack {
       signInAliases: {
         email: true,
       },
+      passwordPolicy: {
+        requireSymbols: false,
+        requireUppercase: false,
+      },
     })
 
     const client = pool.addClient('userPoolClient', {
