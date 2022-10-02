@@ -1,6 +1,7 @@
-import { RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib'
+import { CfnOutput, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib'
 import { Distribution, OriginAccessIdentity } from 'aws-cdk-lib/aws-cloudfront'
 import { S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins'
+import { UserPool } from 'aws-cdk-lib/aws-cognito'
 import { Bucket, BucketAccessControl } from 'aws-cdk-lib/aws-s3'
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment'
 import { Construct } from 'constructs'
@@ -29,6 +30,10 @@ export class FrontendStack extends Stack {
       defaultBehavior: {
         origin: new S3Origin(bucket, { originAccessIdentity }),
       },
+    })
+
+    new CfnOutput(this, 'CloudfrontDomainName', {
+      value: distribution.domainName,
     })
   }
 }
