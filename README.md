@@ -21,5 +21,3 @@ After deploying the frontend there will be a link outputted in the terminal. Go 
 # Developing and Deploying the Frontend
 
 To develop the frontend in the `/frontend` folder run `yarn start` to start a local development environment. To publish this follow the same steps for building and deploying that you did the first time.
-
-Note: When you deploy this the CloudFormation cache can take up to 24 hours to propogate to the 400+ locations the content is being served from. If you want to see your changes deployed immediately go to CloudFront in the AWS management console, select your distribution, select "invalidations", select "create invalidation", enter "/\*" and click "create invalidation". This will invalidate all the old files and CloudFront will get the newest content from the S3 bucket immediately.
