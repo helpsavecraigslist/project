@@ -1,7 +1,5 @@
 To deploy this first do the prerequisites in the CDK workshop [here](https://cdkworkshop.com/) to ensure you can deploy CDK stacks and have your environment setup correctly.
 
-To build the frontend assets go into the `/frontend` folder and run `yarn build`
-
 To deploy to AWS go to `/infrastructure`. If this is your first time deploying the project run `cdk bootstrap`. After that run `cdk deploy APIStack` to deploy the Cognito User pool. After this deployment there will be an output in the terminal for a userPoolClientID and userPoolID. Create a file `aws-settings.json` in the `/frontend/src` directory. An example of this is below. Change the region to wherever you have deployed to.
 
 ```json
@@ -13,6 +11,8 @@ To deploy to AWS go to `/infrastructure`. If this is your first time deploying t
   }
 }
 ```
+
+To build the frontend assets go into the `/frontend` folder and run `yarn build`
 
 To deploy the frontend go to `/infrastructure` and run `cdk deploy FrontendStack`.
 
