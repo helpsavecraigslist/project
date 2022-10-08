@@ -8,6 +8,14 @@ To deploy to AWS go to `/infrastructure`. If this is your first time deploying t
     "region": "PUT YOUR DEPLOYMENT REGION HERE",
     "userPoolId": "PUT USER POOL ID HERE",
     "userPoolWebClientId": "PUT USER POOL WEB CLIENT ID HERE"
+  },
+  "API": {
+    "endpoints": [
+      {
+        "name": "default",
+        "endpoint": "PUT YOUR API ENDPOINT HERE"
+      }
+    ]
   }
 }
 ```
