@@ -15,7 +15,8 @@ const SignIn = () => {
           </main>
         )}
       </Authenticator>
-      <button onClick={service.getItems}>click for items</button>
+      <button onClick={service.getItems}>click for get items</button>
+      <button onClick={service.postItems}>click for post items</button>
       <button onClick={service.getMessages}>click for messages</button>
     </>
   )

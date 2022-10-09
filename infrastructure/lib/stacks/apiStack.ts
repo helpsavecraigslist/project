@@ -1,15 +1,14 @@
 import { CfnOutput, Stack, StackProps } from 'aws-cdk-lib'
 import {
+  CognitoUserPoolsAuthorizer,
   LambdaIntegration,
   LambdaRestApi,
-  RestApi,
 } from 'aws-cdk-lib/aws-apigateway'
 import {
   UserPool,
   UserPoolClientIdentityProvider,
 } from 'aws-cdk-lib/aws-cognito'
 import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda'
-import { ApiGatewayv2DomainProperties } from 'aws-cdk-lib/aws-route53-targets'
 import { Construct } from 'constructs'
 
 export class APIStack extends Stack {
@@ -61,13 +60,29 @@ export class APIStack extends Stack {
 
     const items = api.root.addResource('items', {
       defaultIntegration: new LambdaIntegration(itemsFunction),
+      defaultCorsPreflightOptions: {
+        allowOrigins: ['*'],
+        allowCredentials: true,
+      },
     })
 
     const messages = api.root.addResource('messages', {
       defaultIntegration: new LambdaIntegration(messagesFunction),
     })
 
-    items.addMethod('ANY')
+    const authorizer = new CognitoUserPoolsAuthorizer(
+      this,
+      'userPoolAuthorizer',
+      {
+        cognitoUserPools: [pool],
+      }
+    )
+
+    items.addMethod('GET')
+
+    items.addMethod('POST', undefined, {
+      authorizer,
+    })
 
     items.addProxy()
 
