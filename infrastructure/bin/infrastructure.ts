@@ -5,6 +5,8 @@ import { FrontendStack } from '../lib/stacks/frontendStack'
 import { APIStack } from '../lib/stacks/apiStack'
 
 const app = new cdk.App()
-const apiStack = new APIStack(app, 'APIStack', {})
 
-new FrontendStack(app, 'FrontendStack', {})
+const frontendStack = new FrontendStack(app, 'FrontendStack', {})
+const apiStack = new APIStack(app, 'APIStack', {
+  callbackUrl: frontendStack.cloudfrontDomain,
+})

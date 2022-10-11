@@ -5,14 +5,21 @@ import {
   LambdaRestApi,
 } from 'aws-cdk-lib/aws-apigateway'
 import {
+  ProviderAttribute,
   UserPool,
   UserPoolClientIdentityProvider,
+  UserPoolIdentityProviderGoogle,
 } from 'aws-cdk-lib/aws-cognito'
 import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda'
+import { Provider } from 'aws-cdk-lib/custom-resources'
 import { Construct } from 'constructs'
 
+interface APIStackProps extends StackProps {
+  callbackUrl: string
+}
+
 export class APIStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(scope: Construct, id: string, props: APIStackProps) {
     super(scope, id, props)
 
     // Auth setup
@@ -27,8 +34,45 @@ export class APIStack extends Stack {
       },
     })
 
+    const domainPrefix = this.node.tryGetContext('userPoolDomainPrefix')
+    // Add a domain for Google setup
+
+    const userPoolDomain = pool.addDomain('userPoolDomain', {
+      cognitoDomain: {
+        domainPrefix: domainPrefix,
+      },
+    })
+
+    new CfnOutput(this, 'userPoolDomainRoot', {
+      value: userPoolDomain.domainName,
+    })
+
+    const userPoolIdentityProviderGoogle = new UserPoolIdentityProviderGoogle(
+      this,
+      'userPoolGoogleIDP',
+      {
+        userPool: pool,
+        clientId: this.node.tryGetContext('googleClientId'),
+        clientSecret: this.node.tryGetContext('googleClientSecret'),
+        scopes: ['profile', 'email'],
+        attributeMapping: {
+          email: ProviderAttribute.GOOGLE_EMAIL,
+          familyName: ProviderAttribute.GOOGLE_FAMILY_NAME,
+          givenName: ProviderAttribute.GOOGLE_GIVEN_NAME,
+          profilePicture: ProviderAttribute.GOOGLE_PICTURE,
+        },
+      }
+    )
+
     const client = pool.addClient('userPoolClient', {
-      supportedIdentityProviders: [UserPoolClientIdentityProvider.COGNITO],
+      supportedIdentityProviders: [
+        UserPoolClientIdentityProvider.COGNITO,
+        UserPoolClientIdentityProvider.GOOGLE,
+      ],
+      oAuth: {
+        callbackUrls: ['http://localhost:3000', `https://${props.callbackUrl}`],
+        logoutUrls: ['http://localhost:3000', `https://${props.callbackUrl}`],
+      },
     })
 
     new CfnOutput(this, 'userPoolID', {

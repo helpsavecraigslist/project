@@ -6,6 +6,8 @@ import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment'
 import { Construct } from 'constructs'
 
 export class FrontendStack extends Stack {
+  readonly cloudfrontDomain: string
+
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props)
 
@@ -35,5 +37,6 @@ export class FrontendStack extends Stack {
     new CfnOutput(this, 'CloudfrontDomainName', {
       value: distribution.domainName,
     })
+    this.cloudfrontDomain = distribution.domainName
   }
 }
