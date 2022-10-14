@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Auth, Hub } from 'aws-amplify'
 import '@aws-amplify/ui-react/styles.css'
 import { CognitoIdToken } from 'amazon-cognito-identity-js'
+import NavBar from './NavBar'
+import Toolbar from '@mui/material/Toolbar'
 
 const SignIn = () => {
   const [isSignedIn, setIsSignedIn] = useState(false)
@@ -33,6 +35,9 @@ const SignIn = () => {
 
   return (
     <>
+      <NavBar />
+      {/* Empty toolbar to offset content so it's not covered by app bar */}
+      <Toolbar />
       {isSignedIn ? (
         <>
           <button onClick={() => Auth.signOut()}>Sign out</button>
