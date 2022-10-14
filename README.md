@@ -4,6 +4,19 @@ To deploy this first do the prerequisites in the CDK workshop [here](https://cdk
 
 ## First build and deploy the frontend
 
+Create a file `aws-settings.json` in the `/frontend/src` directory and fill it with JSON below. This is a placeholder to let you build the frontend the first time and these values will be filled in later in the setup.
+
+```json
+{
+  "region": "",
+  "userPoolId": "",
+  "userPoolWebClientId": "",
+  "cognitoDomain": "",
+  "cloudfrontDomain": "",
+  "APIEndpoint": ""
+}
+```
+
 To build the frontend assets go into the `/frontend` folder and run `yarn build`.
 
 To deploy the frontend go to `/infrastructure`, if this is your first time deploying the project run `cdk bootstrap` then run `cdk deploy FrontendStack`.
@@ -69,7 +82,7 @@ Note: These instructions were adapted from [here](https://aws.amazon.com/premium
 
 ## Deploy Backend and Auth
 
-To deploy the backend go to `/infrastructure`. After that run `cdk deploy APIStack` to deploy. After this deployment there will be output in the terminal for a userPoolClientID, userPoolID, userPoolDomainRoot, and API endpoint. Create a file `aws-settings.json` in the `/frontend/src` directory. An example of this is below. Change the region to wherever you have deployed to.
+To deploy the backend go to `/infrastructure`. After that run `cdk deploy APIStack` to deploy. After this deployment there will be output in the terminal for a userPoolClientID, userPoolID, userPoolDomainRoot, and API endpoint. Fill in the file `aws-settings.json` in the `/frontend/src` directory. An example of this is below. Change the region to wherever you have deployed to.
 
 ```json
 {
