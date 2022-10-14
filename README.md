@@ -45,31 +45,34 @@ Note: These instructions were adapted from [here](https://aws.amazon.com/premium
 
 1. Sign in to the Google API Console with your Google account. For more information, see [Manage APIs in the API console](https://support.google.com/googleapi/answer/7037264) on the Google Help website.
 2. On the Dashboard (APIs & Services), choose CREATE.
-3. Under New Project, enter a "Capstone".
-4. For Location, choose BROWSE, and then select a location (USA).
+3. Under New Project, enter a "Capstone". A unique project ID will also be created. This cannot be changed later.
+4. For Location, choose BROWSE, and then select "No organization".
 5. Choose CREATE.
-6. In the Google API Console, in the left navigation pane, choose OAuth consent screen.
+6. In the Google API Console, in the left navigation pane, choose OAuth consent screen. If you are presented with a screen that requests that you "Choose how you want to configure and register your app" with choices Internal or External for User Type, choose **EXTERNAL**.
 7. For Application name, enter a "Save Craigslist".
-8. Choose your OSU email.
-9. For Authorized domains, enter "amazoncognito.com".
-10. Enter your OSU email for developer contact information.
-11. Click "Save and Continue"
-12. Click "Add or Remove Scopes"
+8. Choose your email for the User Support Email.
+9. Skip the "App Domain" section.
+10. For Authorized domains, enter "amazoncognito.com".
+11. Enter your email for developer contact information.
+12. Click "Save and Continue"
+13. Click "Add or Remove Scopes"
 
 - Select ".../auth/userinfo.email"
 - Select ".../auth/userinfo.profile"
 - Select "openid"
+- Click Update (at bottom) when done selecting these options
 
 13. Click "Save and Continue"
 14. Click "Save and Continue" for test users
 15. Go back to the Google dashboard
 16. On the lefthand side select "Credentials"
 17. Select "Create credentials"
-18. For application type select "web application"
-19. For name enter "Save Craigslist"
-20. For Authorized JavaScript origins, enter your Amazon Cognito domain "https://yourDomainPrefix.auth.region.amazoncognito.com"
+18. Select "OAuth Client ID"
+19. For application type select "web application"
+20. For name enter "Save Craigslist"
+21. For Authorized JavaScript origins, enter your Amazon Cognito domain "https://yourDomainPrefix.auth.region.amazoncognito.com"
 
-- Replace yourDomainPrefix and region with the correct values
+- Replace yourDomainPrefix (this should match what you entered in cdk.context.json earlier) and region with the correct values. You do not need to create the domain in the AWS/Congnito console too.
 
 21. For Authorized redirect URIs, enter "https://yourDomainPrefix.auth.region.amazoncognito.com/oauth2/idpresponse"
 
