@@ -23,6 +23,12 @@ export class FrontendStack extends Stack {
 
     const distribution = new Distribution(this, 'Distribution', {
       defaultRootObject: 'index.html',
+      errorResponses: [
+        {
+          httpStatus: 404,
+          responsePagePath: '/index.html',
+        },
+      ],
       defaultBehavior: {
         origin: new S3Origin(bucket, { originAccessIdentity }),
       },
