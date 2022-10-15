@@ -1,16 +1,11 @@
 import React from 'react'
-import NavBar from './NavBar'
-import { Toolbar, Button } from '@mui/material'
+import { Button } from '@mui/material'
 import ItemCard from './ItemCard'
-import Box, { BoxProps } from '@mui/material/Box'
+import Box from '@mui/material/Box'
 
 export default function Items() {
   return (
     <>
-      <NavBar />
-      {/* Empty toolbar to offset content so it's not covered by app bar */}
-      <Toolbar />
-
       <div>
         <h3>Items Page</h3>
         <Button>Basic/Primary</Button>

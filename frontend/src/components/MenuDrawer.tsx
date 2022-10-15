@@ -5,16 +5,20 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
-import { Link } from 'react-router-dom';
-import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
-import IconButton from '@mui/material/IconButton';
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import SellRoundedIcon from '@mui/icons-material/SellRounded';
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import ForumRoundedIcon from '@mui/icons-material/ForumRounded';
-import SyncAltRoundedIcon from '@mui/icons-material/SyncAltRounded';
+import { Link } from 'react-router-dom'
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
+import IconButton from '@mui/material/IconButton'
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
+import SellRoundedIcon from '@mui/icons-material/SellRounded'
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded'
+import ForumRoundedIcon from '@mui/icons-material/ForumRounded'
+import SyncAltRoundedIcon from '@mui/icons-material/SyncAltRounded'
+import { CognitoIdToken } from 'amazon-cognito-identity-js'
 
-export default function TemporaryDrawer() {
+interface MenuDrawerProps {
+  user: null | CognitoIdToken
+}
+export default function TemporaryDrawer(props: MenuDrawerProps) {
   const [state, setState] = React.useState({
     open: false,
   })
@@ -35,16 +39,16 @@ export default function TemporaryDrawer() {
   return (
     <div>
       <React.Fragment key="MenuButton">
-      <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={toggleDrawer(true)}
-          >
-            <MenuRoundedIcon />
-          </IconButton>
+        <IconButton
+          size="large"
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          sx={{ mr: 2 }}
+          onClick={toggleDrawer(true)}
+        >
+          <MenuRoundedIcon />
+        </IconButton>
         <Drawer open={state['open']} onClose={toggleDrawer(false)}>
           <Box
             sx={{ width: 250 }}
@@ -54,13 +58,13 @@ export default function TemporaryDrawer() {
           >
             <List>
               <ListItem key="Home" disablePadding>
-                <ListItemButton component={Link} to="/" >
-                  <HomeRoundedIcon sx={{ m: 1 }} ></HomeRoundedIcon>
+                <ListItemButton component={Link} to="/">
+                  <HomeRoundedIcon sx={{ m: 1 }}></HomeRoundedIcon>
                   <ListItemText primary="Home" />
                 </ListItemButton>
               </ListItem>
               <ListItem key="Items" disablePadding>
-                <ListItemButton component={Link} to="/items" >
+                <ListItemButton component={Link} to="/items">
                   <SellRoundedIcon sx={{ m: 1 }}></SellRoundedIcon>
                   <ListItemText primary="Items" />
                 </ListItemButton>
@@ -71,19 +75,14 @@ export default function TemporaryDrawer() {
                   <ListItemText primary="Messages" />
                 </ListItemButton>
               </ListItem>
-              <ListItem key="Profile" disablePadding>
-                <ListItemButton>
-                  <PersonRoundedIcon sx={{ m: 1 }}></PersonRoundedIcon>
-                  <ListItemText primary="Profile" />
-                </ListItemButton>
-              </ListItem>
-              {/* TODO: Conditionally display log in/log out */}
-              <ListItem key="Login" disablePadding>
-                <ListItemButton>
-                  <SyncAltRoundedIcon sx={{ m: 1 }}></SyncAltRoundedIcon>
-                  <ListItemText primary="Log In/Out" />
-                </ListItemButton>
-              </ListItem>
+              {props.user && (
+                <ListItem key="Profile" disablePadding>
+                  <ListItemButton component={Link} to="/profile">
+                    <PersonRoundedIcon sx={{ m: 1 }}></PersonRoundedIcon>
+                    <ListItemText primary="Profile" />
+                  </ListItemButton>
+                </ListItem>
+              )}
             </List>
           </Box>
         </Drawer>
