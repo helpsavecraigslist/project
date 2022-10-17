@@ -1,17 +1,20 @@
-import { CfnOutput, Stack, StackProps } from 'aws-cdk-lib'
+import { CfnOutput, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib'
 import {
   CognitoUserPoolsAuthorizer,
   LambdaIntegration,
   LambdaRestApi,
+  MockIntegration,
+  PassthroughBehavior,
 } from 'aws-cdk-lib/aws-apigateway'
 import {
   ProviderAttribute,
+  StringAttribute,
   UserPool,
   UserPoolClientIdentityProvider,
   UserPoolIdentityProviderGoogle,
 } from 'aws-cdk-lib/aws-cognito'
+import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb'
 import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda'
-import { Provider } from 'aws-cdk-lib/custom-resources'
 import { Construct } from 'constructs'
 
 interface APIStackProps extends StackProps {
@@ -64,6 +67,8 @@ export class APIStack extends Stack {
       }
     )
 
+    userPoolIdentityProviderGoogle.applyRemovalPolicy(RemovalPolicy.RETAIN)
+
     const client = pool.addClient('userPoolClient', {
       supportedIdentityProviders: [
         UserPoolClientIdentityProvider.COGNITO,
@@ -83,13 +88,43 @@ export class APIStack extends Stack {
       value: client.userPoolClientId,
     })
 
+    // Database Setup
+    const itemsDatabase = new Table(this, 'itemsTable', {
+      partitionKey: {
+        name: 'UserID',
+        type: AttributeType.STRING,
+      },
+      sortKey: {
+        name: 'PostedDate',
+        type: AttributeType.STRING,
+      },
+      removalPolicy: RemovalPolicy.DESTROY,
+    })
+
+    itemsDatabase.addGlobalSecondaryIndex({
+      indexName: 'location-date-gsi',
+      partitionKey: {
+        name: 'Location',
+        type: AttributeType.STRING,
+      },
+      sortKey: {
+        name: 'PostedDate',
+        type: AttributeType.STRING,
+      },
+    })
+
     // API setup
 
     const itemsFunction = new Function(this, 'itemsFunction', {
       code: Code.fromAsset('../backend'),
       handler: 'items.lambda_handler',
       runtime: Runtime.PYTHON_3_9,
+      environment: {
+        ITEMS_TABLE: itemsDatabase.tableName,
+      },
     })
+
+    itemsDatabase.grantReadWriteData(itemsFunction)
 
     const messagesFunction = new Function(this, 'messagesFunction', {
       code: Code.fromAsset('../backend'),
