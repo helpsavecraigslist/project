@@ -12,7 +12,7 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
 import SellRoundedIcon from '@mui/icons-material/SellRounded'
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded'
 import ForumRoundedIcon from '@mui/icons-material/ForumRounded'
-import SyncAltRoundedIcon from '@mui/icons-material/SyncAltRounded'
+import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import { CognitoIdToken } from 'amazon-cognito-identity-js'
 
 interface MenuDrawerProps {
@@ -75,6 +75,14 @@ export default function TemporaryDrawer(props: MenuDrawerProps) {
                   <ListItemText primary="Messages" />
                 </ListItemButton>
               </ListItem>
+              {props.user && (
+                <ListItem key="PostItem" disablePadding>
+                  <ListItemButton component={Link} to="/itemform">
+                    <AddCircleRoundedIcon sx={{ m: 1 }}></AddCircleRoundedIcon>
+                    <ListItemText primary="Post Item For Sale" />
+                  </ListItemButton>
+                </ListItem>
+              )}
               {props.user && (
                 <ListItem key="Profile" disablePadding>
                   <ListItemButton component={Link} to="/profile">
