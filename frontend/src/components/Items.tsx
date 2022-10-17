@@ -1,16 +1,32 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button } from '@mui/material'
 import ItemCard from './ItemCard'
 import Box from '@mui/material/Box'
+import { API } from 'aws-amplify'
 
 export default function Items() {
+  const fetchItems = async () => {
+    const apiName = 'default'
+    const path = 'items'
+    const myInit = {}
+    try {
+      const response = await API.get(apiName, path, myInit)
+      console.log(response)
+    } catch {
+      console.error('Error fetching items')
+    }
+  }
+
+  useEffect(() => {
+    fetchItems()
+  }, [])
   return (
     <>
       <div>
         <h3>Items Page</h3>
         <Button>Basic/Primary</Button>
-        <Button variant="contained">Contained/Primary</Button>
-        <Button variant="outlined">Outlined/Primary</Button>
+        <Button variant='contained'>Contained/Primary</Button>
+        <Button variant='outlined'>Outlined/Primary</Button>
 
         <Box
           sx={{
