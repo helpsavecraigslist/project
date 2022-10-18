@@ -6,7 +6,7 @@ from datetime import datetime
 
 def lambda_handler(event, context):
     print("event")
-    print(event)
+    print(json.dumps(event))
     print("context")
     print(context)
 
