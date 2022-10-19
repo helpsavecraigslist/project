@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
-import { Button } from '@mui/material'
+import { Grid } from '@mui/material'
 import ItemCard from './ItemCard'
-import Box from '@mui/material/Box'
 import { API } from 'aws-amplify'
 
 export default function Items() {
@@ -22,43 +21,39 @@ export default function Items() {
   }, [])
   return (
     <>
-      <div>
-        <h3>Items Page</h3>
-        <Button>Basic/Primary</Button>
-        <Button variant='contained'>Contained/Primary</Button>
-        <Button variant='outlined'>Outlined/Primary</Button>
-
-        <Box
-          sx={{
-            display: 'grid',
-            gap: 1,
-            gridTemplateColumns: 'repeat(4, 1fr)',
-          }}
-        >
-          {/* TODO: Programatically generate the correct number of cards with content from the database */}
+      <Grid container display={'flex'} spacing={3} justifyContent={'center'}>
+        {/* TODO: Programatically generate the correct number of cards with content from the database */}
+        <Grid item>
           <ItemCard></ItemCard>
+        </Grid>
+        <Grid item>
           <ItemCard></ItemCard>
+        </Grid>
+        <Grid item>
           <ItemCard></ItemCard>
+        </Grid>
+        <Grid item>
           <ItemCard></ItemCard>
+        </Grid>
+        <Grid item>
           <ItemCard></ItemCard>
+        </Grid>
+        <Grid item>
           <ItemCard></ItemCard>
+        </Grid>
+        <Grid item>
           <ItemCard></ItemCard>
-        </Box>
-
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-      </div>
+        </Grid>
+        <Grid item>
+          <ItemCard></ItemCard>
+        </Grid>
+        <Grid item>
+          <ItemCard></ItemCard>
+        </Grid>
+        <Grid item>
+          <ItemCard></ItemCard>
+        </Grid>
+      </Grid>
     </>
   )
 }
