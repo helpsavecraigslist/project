@@ -70,7 +70,7 @@ export default function TemporaryDrawer(props: MenuDrawerProps) {
                 </ListItemButton>
               </ListItem>
               <ListItem key="Messages" disablePadding>
-                <ListItemButton>
+                <ListItemButton component={Link} to="/messages">
                   <ForumRoundedIcon sx={{ m: 1 }}></ForumRoundedIcon>
                   <ListItemText primary="Messages" />
                 </ListItemButton>
