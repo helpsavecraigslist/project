@@ -1,17 +1,19 @@
-import React, { useEffect } from 'react'
-import { Button } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { Grid } from '@mui/material'
 import ItemCard from './ItemCard'
-import Box from '@mui/material/Box'
 import { API } from 'aws-amplify'
+import { DashboardCustomizeOutlined } from '@mui/icons-material'
 
 export default function Items() {
+  const [dbResponse, setDbResponse] = useState<any[]>([])
+
   const fetchItems = async () => {
     const apiName = 'default'
     const path = 'items'
     const myInit = {}
     try {
       const response = await API.get(apiName, path, myInit)
-      console.log(response)
+      setDbResponse([...response.Items])
     } catch {
       console.error('Error fetching items')
     }
@@ -20,45 +22,20 @@ export default function Items() {
   useEffect(() => {
     fetchItems()
   }, [])
+
+  function generateCards(dbResponse: any) {
+    return dbResponse.map((obj: any) => (
+      <Grid item>
+        <ItemCard data={obj}></ItemCard>
+      </Grid>
+    ))
+  }
+
   return (
     <>
-      <div>
-        <h3>Items Page</h3>
-        <Button>Basic/Primary</Button>
-        <Button variant='contained'>Contained/Primary</Button>
-        <Button variant='outlined'>Outlined/Primary</Button>
-
-        <Box
-          sx={{
-            display: 'grid',
-            gap: 1,
-            gridTemplateColumns: 'repeat(4, 1fr)',
-          }}
-        >
-          {/* TODO: Programatically generate the correct number of cards with content from the database */}
-          <ItemCard></ItemCard>
-          <ItemCard></ItemCard>
-          <ItemCard></ItemCard>
-          <ItemCard></ItemCard>
-          <ItemCard></ItemCard>
-          <ItemCard></ItemCard>
-          <ItemCard></ItemCard>
-        </Box>
-
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-      </div>
+      <Grid container display={'flex'} spacing={3} justifyContent={'center'}>
+        {generateCards(dbResponse)}
+      </Grid>
     </>
   )
 }

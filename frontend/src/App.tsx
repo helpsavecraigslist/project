@@ -5,7 +5,13 @@ import { Amplify, Auth } from 'aws-amplify'
 import { CognitoIdToken } from 'amazon-cognito-identity-js'
 import settings from './aws-settings.json'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { createTheme, colors, ThemeProvider, Toolbar } from '@mui/material'
+import {
+  createTheme,
+  colors,
+  ThemeProvider,
+  Toolbar,
+  Container,
+} from '@mui/material'
 import NavBar from './components/NavBar'
 import ItemForm from './components/ItemForm'
 import MessageList from './components/MessageList'
@@ -21,8 +27,8 @@ const theme = createTheme({
       main: '#572F88',
     },
     secondary: {
-      main: '#d5cde1'
-    }
+      main: '#d5cde1',
+    },
   },
 })
 
@@ -72,16 +78,23 @@ const App = () => {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <BrowserRouter>
-          <NavBar user={user} />
-          <Toolbar />
-          <Routes>
-            <Route path="/profile" element={user && <Profile user={user} />} />
-            <Route path="/items" element={<Items />} />
-            <Route path="/itemform" element={<ItemForm />} />
-            <Route path="/messages" element={<MessageList />} />
-          </Routes>
-        </BrowserRouter>
+
+        <Container>
+          <BrowserRouter>
+            <NavBar user={user} />
+            <Toolbar />
+            <Routes>
+              <Route
+                path='/profile'
+                element={user && <Profile user={user} />}
+              />
+              <Route path='/items' element={<Items />} />
+              <Route path='/itemform' element={<ItemForm />} />
+              <Route path="/messages" element={<MessageList />} />
+            </Routes>
+          </BrowserRouter>
+        </Container>
+         main
       </ThemeProvider>
     </>
   )
