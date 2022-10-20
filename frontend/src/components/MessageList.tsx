@@ -1,8 +1,52 @@
 import React, { useEffect } from 'react'
-import { Button } from '@mui/material'
 import MessageItem from './MessageItem'
 import Box from '@mui/material/Box'
 import { API } from 'aws-amplify'
+
+const messageData = [
+    {
+        username: "Generic",
+        userAvatar: "string",
+        recipient: "another user",
+        postedDate: "Mon Day, Year",
+        numReplies: 1,
+        dateLast: "Mon Day, Year",
+        userLast: "username of last reply",
+        unread: "True",
+        subject: "Our subject",
+        numParticipants: 2,
+
+    },
+    {
+      username: "shellp",
+      userAvatar: "string to source",
+      recipient: "qwerewq",
+      postedDate: "Jun 18, 1982",
+      numReplies: 1,
+      dateLast: "Oct 20, 2022",
+      userLast: "qwerewq",
+      unread: "False",
+      subject: "MBP sales",
+      numParticipants: 2,
+
+  },
+  {
+    username: "anyone",
+    userAvatar: "string to source",
+    recipient: "shellp",
+    postedDate: "May 18, 2022",
+    numReplies: 1,
+    dateLast: "Jul 20, 2022",
+    userLast: "anyone",
+    unread: "False",
+    subject: "motorcycle",
+    numParticipants: 2,
+
+},
+]
+
+
+
 
 export default function MessageList() {
   const fetchMessageList = async () => {
@@ -16,43 +60,41 @@ export default function MessageList() {
       console.error('Error fetching messages')
     }
   }
-
+ 
   useEffect(() => {
     fetchMessageList()
   }, [])
   return (
     <>
-      <div>
-        <h3>Messages Inbox</h3>
+      <h3>Messages Inbox</h3>
+      
+       <div style={{width:"100%",display: 'block', justifyContent: 'center', alignItems: 'center'}}>
+        
 
-        <Button>Basic/Primary</Button>
-        <Button variant='contained'>Contained/Primary</Button>
-        <Button variant='outlined'>Outlined/Primary</Button>
-
-        <Box
-          sx={{
-            display: 'grid',
-            gap: 1,
-            gridTemplateColumns: 'repeat(4, 1fr)',
-          }}
-        >
-          {/* TODO: Programatically generate the correct number of cards with content from the database */}
-          <MessageItem></MessageItem>
+        <Box sx={{ width: '100%' }} >
+          
+          {/* TODO: pull message data */}
+          {messageData.map((message,index)=>(
+              
+             <MessageItem 
+              key = {index}
+              userID = {message.username}
+              userAvatar = {message.userAvatar}
+              recepient = {message.recipient}
+              subject = {message.subject}
+              postedDate = {message.postedDate}
+              numReplies = {message.numReplies}
+              numParticipants = {message.numParticipants}
+              dateLast = {message.dateLast}
+              userLast = {message.userLast}
+              unread = {message.unread}
+              ></MessageItem>
+              
+              )
+            )
+          }
         </Box>
 
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
-        <p>More content to test scrolling</p>
       </div>
     </>
   )
