@@ -49,7 +49,8 @@ def lambda_handler(event, context):
           'Price':  eventBody['price'],
           'Tags': eventBody['tags'].split(','),
           'Title': eventBody['title'],
-          'Picture': "https://mui.com/static/images/cards/contemplative-reptile.jpg"
+          'Picture': "https://mui.com/static/images/cards/contemplative-reptile.jpg",
+          'Description': eventBody['description']
         }
       )
       print("posted into table")
