@@ -14,6 +14,7 @@ import {
 } from '@mui/material'
 import NavBar from './components/NavBar'
 import ItemForm from './components/ItemForm'
+import MessageList from './components/MessageList'
 
 // This object controls the Material UI theme overrides.
 // See here for how this object is structured:
@@ -77,6 +78,7 @@ const App = () => {
   return (
     <>
       <ThemeProvider theme={theme}>
+
         <Container>
           <BrowserRouter>
             <NavBar user={user} />
@@ -88,9 +90,11 @@ const App = () => {
               />
               <Route path='/items' element={<Items />} />
               <Route path='/itemform' element={<ItemForm />} />
+              <Route path="/messages" element={<MessageList />} />
             </Routes>
           </BrowserRouter>
         </Container>
+         main
       </ThemeProvider>
     </>
   )
