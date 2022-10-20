@@ -6,8 +6,16 @@ import CardMedia from '@mui/material/CardMedia'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 
+// TODO - map clicking on tag button to search for other items with that tag? Stretch goal?
+function mapTagsToButtons(tags: []) {
+  return tags.map((obj: string) => (
+    <Button sx={{ m: 0.25 }} size='small' variant='contained'>
+      {obj}
+    </Button>
+  ))
+}
 // Adapted from sample code at https://mui.com/material-ui/react-card/
-export default function MediaCard() {
+export default function MediaCard({ data }: any) {
   return (
     <Card sx={{ maxWidth: 345, my: 5 }}>
       <CardMedia
@@ -18,16 +26,12 @@ export default function MediaCard() {
       />
       <CardContent>
         <Typography gutterBottom variant='h5' component='div'>
-          Lizard
+          {data.Title}
         </Typography>
-        <Typography variant='body2' color='text.secondary'>
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
-        </Typography>
+        {mapTagsToButtons(data.Tags)}
       </CardContent>
       <CardActions>
-        <Button size='small'>Share</Button>
-        <Button size='small'>Learn More</Button>
+        <Button size='small'>Message Seller</Button>
       </CardActions>
     </Card>
   )
