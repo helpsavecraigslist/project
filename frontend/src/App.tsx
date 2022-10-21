@@ -94,7 +94,7 @@ const App = () => {
             </Routes>
           </BrowserRouter>
         </Container>
-         main
+         
       </ThemeProvider>
     </>
   )
