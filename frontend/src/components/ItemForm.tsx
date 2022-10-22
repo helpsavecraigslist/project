@@ -51,8 +51,6 @@ export default function ItemForm() {
     } catch {
       console.error('Error fetching locations')
     }
-
-    setLocations(await API.get(apiName, path, myInit))
   }
 
   const handleSubmit = async (event: FormEvent) => {
@@ -110,12 +108,13 @@ export default function ItemForm() {
             https://mui.com/material-ui/react-text-field/#type-quot-number-quot */}
             <TextField
               required
-              inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+              type='number'
               id='item-price'
               label='Price'
               value={price}
               variant='outlined'
               sx={{ flexGrow: 1 }}
+              InputProps={{ inputProps: { min: 0, step: '0.01' } }}
               onChange={(e) => setPrice(e.target.value)}
             />
             <FormControl sx={{ flexGrow: 1 }}>
