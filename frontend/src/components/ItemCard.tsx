@@ -5,6 +5,7 @@ import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
+import { useNavigate } from 'react-router-dom'
 
 // TODO - map clicking on tag button to search for other items with that tag? Stretch goal?
 function mapTagsToButtons(tags: []) {
@@ -14,8 +15,17 @@ function mapTagsToButtons(tags: []) {
     </Button>
   ))
 }
+
+function generateItemUrl(userID: string, postDate: string) {
+  const directURL = '/items/item?user=' + userID + '&post_date=' + postDate
+  console.log(directURL)
+  return directURL
+}
+
 // Adapted from sample code at https://mui.com/material-ui/react-card/
 export default function MediaCard({ data }: any) {
+  const navigate = useNavigate()
+
   return (
     <Card sx={{ maxWidth: 345, my: 5 }}>
       <CardMedia
@@ -31,6 +41,14 @@ export default function MediaCard({ data }: any) {
         {mapTagsToButtons(data.Tags)}
       </CardContent>
       <CardActions>
+        <Button
+          size='small'
+          onClick={() =>
+            navigate(generateItemUrl(data.UserID, data.PostedDate))
+          }
+        >
+          View Details
+        </Button>
         <Button size='small'>Message Seller</Button>
       </CardActions>
     </Card>
