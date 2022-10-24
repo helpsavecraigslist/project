@@ -49,7 +49,13 @@ export default function MediaCard({ data }: any) {
         >
           View Details
         </Button>
-        <Button size='small'>Message Seller</Button>
+        <Button size='small'
+          onClick={() =>
+            navigate('/newMessage') // not sure the data obj has what I; need the user who listed the ad and subject (that's in there!)
+          }
+        >
+          Message Seller
+        </Button>
       </CardActions>
     </Card>
   )

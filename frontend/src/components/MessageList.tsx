@@ -2,6 +2,9 @@ import React, { useEffect } from 'react'
 import MessageItem from './MessageItem'
 import Box from '@mui/material/Box'
 import { API } from 'aws-amplify'
+import Button from '@mui/material/Button'
+import { useNavigate } from 'react-router-dom'
+import { Navigation } from '@mui/icons-material'
 
 const messageData = [
     {
@@ -46,9 +49,11 @@ const messageData = [
 ]
 
 
-
+const data = {subject:"killer",}
 
 export default function MessageList() {
+  const navigate = useNavigate()
+
   const fetchMessageList = async () => {
     const apiName = 'default'
     const path = 'messages'
@@ -67,6 +72,13 @@ export default function MessageList() {
   return (
     <>
       <h3>Messages Inbox</h3>
+      <Button size='small'
+          onClick={() =>
+            navigate('/newMessage') // not sure the data obj has what I; need the user who listed the ad and subject (that's in there!)
+          }
+        >
+          Message Seller
+        </Button>
       
        <div style={{width:"100%",display: 'block', justifyContent: 'center', alignItems: 'center'}}>
         

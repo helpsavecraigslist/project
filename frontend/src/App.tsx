@@ -17,6 +17,7 @@ import ItemForm from './components/ItemForm'
 import MessageList from './components/MessageList'
 import MessageDetail from './components/MessageDetail'
 import SingleItem from './components/SingleItem'
+import MessageNewMessage from './components/MessageNewMessage'
 
 // This object controls the Material UI theme overrides.
 // See here for how this object is structured:
@@ -94,6 +95,7 @@ const App = () => {
               <Route path='/itemform' element={<ItemForm />} />
               <Route path="/messages" element={<MessageList />} />
               <Route path='/messageDetail' element={<MessageDetail/>} />
+              <Route path='/newMessage' element={<MessageNewMessage/>} />
             </Routes>
           </BrowserRouter>
         </Container>
