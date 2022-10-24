@@ -87,6 +87,17 @@ def lambda_handler(event, context):
     if event['path'] == '/items/locations':
       return build_success_response(avaliable_locations)
 
+    if event['path'] == '/items/item':
+      # Handle URL params if present to view single item
+      user = event['queryStringParameters']['user']
+      post_date = event['queryStringParameters']['post_date']
+      items = table.get_item(
+        Key={
+        'UserID': user,
+        'PostedDate': post_date
+      })
+      return build_success_response(items)
+
     if event['httpMethod'] == 'GET':
       items = table.scan()
       return build_success_response(items)
