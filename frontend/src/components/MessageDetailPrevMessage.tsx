@@ -1,9 +1,9 @@
+import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
-import { Link } from 'react-router-dom';
 
 
 //adapted from https://mui.com/material-ui/react-grid/
@@ -17,26 +17,22 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 {/* 
-  bgColor
-  Input: 'True' or anything else 
-  Output: #D8CDE2 or #F3F0F8 hexdec color for unread/read messages
-  Notes: consider changing output to theme.dark/ .light 
-*/}
-function bgColor(unread) {if (unread == 'True'){return '#D8CDE2';}return '#F3F0F8'};
 
-export default function MessageItem(props: any) {
-  const {userID, userAvatar, subject, recepient, postedDate, numParticipants, numReplies, dateLast, userLast, unread} = props;
+*/}
+
+
+export default function MessageDetailPrevMessage(props: any) {
+  const {userID, userAvatar, message, postedDate, } = props;
   return (
     
     <Paper
       square
-      
       sx={{
         p: 2,
         margin: 'auto auto 5px auto',
         maxWidth: '95%',
         flexGrow: 1,
-        backgroundColor: bgColor(unread) // need function here to change color for read and unread
+        backgroundColor: '#D8CDE2'
       }}
     >
       <Grid container spacing={2}>
@@ -54,33 +50,15 @@ export default function MessageItem(props: any) {
           <Grid item xs container direction="column">
             <Grid item xs>
               <Typography gutterBottom variant="subtitle1" component="div">
-                <Link to='/messageDetail'> {subject} </Link>
+                {postedDate}
               </Typography>
               <Typography variant="body2" gutterBottom>
-                {userID}, {recepient} - {postedDate}
+                {message}
               </Typography>
             </Grid>
             
           </Grid>
-          <Grid item xs container direction="column">
-            <Grid item xs>
-              <Typography gutterBottom variant="subtitle1" component="div">
-                Replies:  {numReplies}
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                Participants:  {numParticipants}
-              </Typography>
-            </Grid>
-            
-          </Grid>
-          <Grid item xs>
-              <Typography gutterBottom variant="subtitle1" component="div">
-                {dateLast}
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                {userLast}
-              </Typography>
-            </Grid>
+          
         </Grid>
       </Grid>
     </Paper>
