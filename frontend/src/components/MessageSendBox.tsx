@@ -1,8 +1,6 @@
 import TextField from '@mui/material/TextField';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 
