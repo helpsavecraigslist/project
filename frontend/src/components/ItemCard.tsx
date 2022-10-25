@@ -31,7 +31,7 @@ export default function MediaCard({ data }: any) {
       <CardMedia
         component='img'
         height='140'
-        image='https://picsum.photos/200/300'
+        image={data.ImageUrl}
         alt='green iguana'
       />
       <CardContent>
@@ -49,9 +49,10 @@ export default function MediaCard({ data }: any) {
         >
           View Details
         </Button>
-        <Button size='small'
-          onClick={() =>
-            navigate('/newMessage') // not sure the data obj has what I; need the user who listed the ad and subject (that's in there!)
+        <Button
+          size='small'
+          onClick={
+            () => navigate('/newMessage') // not sure the data obj has what I; need the user who listed the ad and subject (that's in there!)
           }
         >
           Message Seller

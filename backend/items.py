@@ -1,6 +1,7 @@
 import json
 import boto3
 import os
+import base64
 from datetime import datetime
 from decimal import Decimal
 
@@ -45,14 +46,32 @@ def lambda_handler(event, context):
     }
 
     dynamodb = boto3.resource('dynamodb')
+    s3 = boto3.resource('s3')
 
     tableName = os.environ['ITEMS_TABLE']
+    imagesBucketName = os.environ['IMAGES_BUCKET']
+    imagesDistributionDomainName = os.environ['DISTRIBUTION_URL']
 
     table = dynamodb.Table(tableName)
+    imagesBucket = s3.Bucket(imagesBucketName)
 
     def post_item(userName, eventBody):
       numPrice = Decimal(eventBody['price'])
       roundedPrice = round(numPrice, 2)
+
+      file_base_64 = ''
+      if eventBody['imageFile'].startswith('data:image/jpeg;base64,'):
+        file_base_64 = base64.b64decode(eventBody['imageFile'][23: ])
+      else:
+        file_base_64 = base64.b64decode(eventBody['imageFile'])
+      unique_id = str(datetime.now())
+      full_path = '{}/{}'.format(unique_id, eventBody['imageName'])
+      imagesBucket.put_object(
+          Key=full_path,
+          Body=file_base_64,
+          ContentType='image/jpg'
+      )
+
       if roundedPrice < 0:
         raise Exception("Number cannot be negative")
       if eventBody['location'] not in avaliable_locations:
@@ -70,7 +89,8 @@ def lambda_handler(event, context):
           'Price': roundedPrice,
           'Tags': eventBody['tags'].split(','),
           'Title': eventBody['title'],
-          'Picture': "https://mui.com/static/images/cards/contemplative-reptile.jpg",
+          'ImagePath': full_path,
+          'ImageUrl': 'https://{}/{}'.format(imagesDistributionDomainName, full_path),
           'Description': eventBody['description']
         }
       table.put_item(
