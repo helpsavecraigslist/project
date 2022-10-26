@@ -1,10 +1,7 @@
-import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
 import { Card, Box } from '@mui/material';
 
 //adapted from https://mui.com/material-ui/react-grid/

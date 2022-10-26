@@ -5,6 +5,7 @@ import { API } from 'aws-amplify'
 import Button from '@mui/material/Button'
 import { useNavigate } from 'react-router-dom'
 import { Navigation } from '@mui/icons-material'
+import Typography from '@mui/material/Typography';
 
 const messageData = [
     {
@@ -71,18 +72,13 @@ export default function MessageList() {
   }, [])
   return (
     <>
-      <h3>Messages Inbox</h3>
-      <Button size='small'
-          onClick={() =>
-            navigate('/newMessage',{state: {userID: data.UserID, subject: data.Subject}}) // not sure the data obj has what I; need the user who listed the ad and subject (that's in there!)
-          }
-        >
-          Message Seller -test only
-        </Button>
-      
-       <div style={{width:"100%",display: 'block', justifyContent: 'center', alignItems: 'center'}}>
-        
-
+       <div style={{width:"100%",display: 'block', justifyContent: 'space-evenlycenter', alignItems: 'center'}}>
+        <Box sx={{width: '100%', alignItems: 'center', justifyContent: 'space-around', display: 'flex', }}>
+          
+          <Typography gutterBottom variant='h4'>
+            Messages
+          </Typography>
+        </Box>
         <Box sx={{ width: '100%' }} >
           
           {/* TODO: pull message data */}
@@ -106,7 +102,13 @@ export default function MessageList() {
             )
           }
         </Box>
-
+        <Button size='small'
+            onClick={() =>
+              navigate('/newMessage',{state: {userID: data.UserID, subject: data.Subject}}) // not sure the data obj has what I; need the user who listed the ad and subject (that's in there!)
+            }
+           >
+              Message Seller -test only
+          </Button>
       </div>
     </>
   )
