@@ -36,7 +36,7 @@ export default function SingleItem() {
       const response = await API.get(apiName, path, myInit)
       setItemUser(response.Item.UserID)
       setItemTitle(response.Item.Title)
-      setItemPicture(response.Item.Picture)
+      setItemPicture(response.Item.ImageUrl)
       setItemDate(response.Item.PostedDate)
       setItemLocation(response.Item.Location)
       setItemPrice(response.Item.Price)

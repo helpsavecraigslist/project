@@ -7,20 +7,41 @@ import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import Select from '@mui/material/Select'
 import Box from '@mui/material/Box'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import { useNavigate } from 'react-router-dom'
+
+function generateItemUrl(userID: string, postDate: string) {
+  const directURL = '/items/item?user=' + userID + '&post_date=' + postDate
+  console.log(directURL)
+  return directURL
+}
 
 export default function ItemForm() {
   // State tracker for each field
   // postedBy and postedTime will be set automatically on backend
   // photo URL will be assigned once uploaded?
+  const navigate = useNavigate()
   const [title, setTitle] = useState('')
   const [price, setPrice] = useState('')
   const [tags, setTags] = useState('')
   const [description, setDescription] = useState('')
   const [location, setLocation] = useState('')
-  const [image, setImage] = useState('')
+  const [image, setImage] = useState<null | File>(null)
   const [locations, setLocations] = useState([])
+  const [redirect, setRedirect] = useState(false)
+
+  // source: https://aws.plainenglish.io/how-to-create-an-image-uploader-using-aws-cdk-c163277b26f0
+  const toBase64 = (file: File) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => resolve(reader.result)
+      reader.onerror = (error) => reject(error)
+    })
 
   const postItem = async () => {
+    const base64Image = await toBase64(image)
     const apiName = 'default'
     const path = 'items'
     const myInit = {
@@ -29,7 +50,15 @@ export default function ItemForm() {
           .getIdToken()
           .getJwtToken()}`,
       },
-      body: { title, price, tags, description, location },
+      body: {
+        title,
+        price,
+        tags,
+        description,
+        location,
+        imageFile: base64Image,
+        imageName: image.name,
+      },
     }
 
     // TODO - add better error handling for unsuccessful post
@@ -44,7 +73,6 @@ export default function ItemForm() {
     const apiName = 'default'
     const path = 'items/locations'
     const myInit = {}
-
     try {
       const avaliableLocations = await API.get(apiName, path, myInit)
       setLocations(avaliableLocations)
@@ -53,15 +81,33 @@ export default function ItemForm() {
     }
   }
 
+  const handleImageInput = (e) => {
+    // handle validations
+    const file = e.target.files[0]
+    console.log(file)
+    if (file.size > 3000000) alert('file size cannot exceed 3 MB')
+    else if (file.type !== 'image/jpeg') alert('file must be jpg or jpeg')
+    else setImage(file)
+  }
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
     const response = await postItem()
     console.log(response)
+    if (redirect) {
+      const itemUrl = generateItemUrl(
+        response.Item['UserID'],
+        response.Item['PostedDate']
+      )
+      navigate(itemUrl)
+    }
   }
 
   useEffect(() => {
     setFormOptions()
   }, [])
+
+  console.log(image)
 
   return (
     <>
@@ -72,6 +118,15 @@ export default function ItemForm() {
             '& > :not(style)': { display: 'flex', maxWidth: '80%', m: 3 },
           }}
         >
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={redirect}
+                onChange={() => setRedirect(!redirect)}
+              />
+            }
+            label='Redirect on Submit'
+          />
           <TextField
             required
             id='item-title'
@@ -148,8 +203,14 @@ export default function ItemForm() {
           {/* TODO - this doesn't do anything currently except open file finder */}
           <Button variant='contained' color='secondary' component='label'>
             Upload Image
-            <input id='item-image' type='file' value={image} hidden />
+            <input
+              onChange={(e) => handleImageInput(e)}
+              id='item-image'
+              type='file'
+              hidden
+            />
           </Button>
+          {image && image.name}
           <Button variant='contained' type='submit' fullWidth sx={{ p: 3 }}>
             Submit
           </Button>

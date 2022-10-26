@@ -31,7 +31,7 @@ export default function MediaCard({ data }: any) {
       <CardMedia
         component='img'
         height='140'
-        image={data.Picture}
+        image={data.ImageUrl}
         alt='green iguana'
       />
       <CardContent sx={{ mb: -2 }}>
@@ -48,9 +48,12 @@ export default function MediaCard({ data }: any) {
         >
           View Details
         </Button>
-        <Button size='small'
+        <Button
+          size='small'
           onClick={() =>
-            navigate('/newMessage', {state: {userID: data.UserID, subject: data.Subject}}) 
+            navigate('/newMessage', {
+              state: { userID: data.UserID, subject: data.Subject },
+            })
           }
         >
           Message Seller

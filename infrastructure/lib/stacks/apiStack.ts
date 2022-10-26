@@ -3,18 +3,18 @@ import {
   CognitoUserPoolsAuthorizer,
   LambdaIntegration,
   LambdaRestApi,
-  MockIntegration,
-  PassthroughBehavior,
 } from 'aws-cdk-lib/aws-apigateway'
+import { Distribution, OriginAccessIdentity } from 'aws-cdk-lib/aws-cloudfront'
+import { S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins'
 import {
   ProviderAttribute,
-  StringAttribute,
   UserPool,
   UserPoolClientIdentityProvider,
   UserPoolIdentityProviderGoogle,
 } from 'aws-cdk-lib/aws-cognito'
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb'
 import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda'
+import { Bucket } from 'aws-cdk-lib/aws-s3'
 import { Construct } from 'constructs'
 
 interface APIStackProps extends StackProps {
@@ -113,6 +113,22 @@ export class APIStack extends Stack {
       },
     })
 
+    // Static images bucket and distribution
+    const imagesBucket = new Bucket(this, 'imagesBucket', {})
+
+    const originAccessIdentity = new OriginAccessIdentity(
+      this,
+      'ImagesOriginAccessIdentity'
+    )
+    imagesBucket.grantRead(originAccessIdentity)
+
+    const imagesDistribution = new Distribution(this, 'imagesDistribution', {
+      defaultBehavior: {
+        origin: new S3Origin(imagesBucket, { originAccessIdentity }),
+      },
+    })
+
+    // API setup
     const chatsDatabase = new Table(this, 'chatsTable', {
       partitionKey: {
         name: 'ChatID',
@@ -144,8 +160,12 @@ export class APIStack extends Stack {
       runtime: Runtime.PYTHON_3_9,
       environment: {
         ITEMS_TABLE: itemsDatabase.tableName,
+        IMAGES_BUCKET: imagesBucket.bucketName,
+        DISTRIBUTION_URL: imagesDistribution.distributionDomainName,
       },
     })
+
+    imagesBucket.grantReadWrite(itemsFunction)
 
     itemsDatabase.grantReadWriteData(itemsFunction)
 
@@ -160,7 +180,7 @@ export class APIStack extends Stack {
     })
 
     chatsDatabase.grantReadWriteData(messagesFunction)
-    
+
     usersDatabase.grantReadWriteData(messagesFunction)
 
     const api = new LambdaRestApi(this, 'api', {
