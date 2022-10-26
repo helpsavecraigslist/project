@@ -50,7 +50,7 @@ export default function MediaCard({ data }: any) {
         </Button>
         <Button
           onClick={
-            () => navigate('/newMessage') // not sure the data obj has what I; need the user who listed the ad and subject (that's in there!)
+            () => navigate('/newMessage', {state: {userID: data.UserID, subject: data.Subject}})
           }
         >
           Message Seller
