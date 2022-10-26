@@ -4,7 +4,8 @@ import { API } from 'aws-amplify'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import { useNavigate, useLocation } from 'react-router-dom'
-import Chip from '@mui/material/Chip'
+import Typography from '@mui/material/Typography';
+
 
 export default function MessageNewMessage() {
     const navigate = useNavigate()
@@ -31,46 +32,53 @@ export default function MessageNewMessage() {
     {/* 
                
     */}
-       <div style={{width:"100%",display: 'block', justifyContent: 'center', alignItems: 'center'}}>
-        <Box sx={{ width: '100%' }} >
-            <TextField
+        <Box sx={{width: '100', backgroundColor: '#F3F0F7', justifyContent: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 1 }}>
+          <Typography gutterBottom variant='h4'>
+            New Conversation
+          </Typography>
+          <Box sx={{ width: '100%', backgroundColor: '#F3F0F7', alignItems: 'center', display: 'flex', flexDirection: 'column', p:1 }} >
+            <Box sx={{ width: '90%', backgroundColor: '#FFFFFF', p:1}} >
+                <TextField
+                    
+                    id="standard"
+                    label="Recipient"
+                    defaultValue=  {itemData.state.userID} 
+                    fullWidth
+                    sx = {{my:.5}}
+                    // disabled, could add but this is greyed out and looks not so great
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                />
+                <TextField
+                    fullWidth
+                    id="outlined-helperText"
+                    label="Subject"
+                    sx = {{my:.5}}
+                    defaultValue={itemData.state.subject} 
+                    
+                />
+          
+                <TextField
+                    id="outlined-multiline-static"
+                    
+                    multiline
+                    rows={4}
+                    sx = {{my:.5}}
+                    placeholder = "enter your message here"
+                    fullWidth
+                />
                 
-                id="standard"
-                label="Recipient"
-                defaultValue=  {itemData.state.userID} 
-                fullWidth
-                sx = {{my:.5}}
-                // disabled, could add but this is greyed out and looks not so great
-                InputProps={{
-                  readOnly: true,
-                }}
-            />
-            <TextField
-                fullWidth
-                id="outlined-helperText"
-                label="Subject"
-                sx = {{my:.5}}
-                defaultValue={itemData.state.subject} 
-                
-            />
-       
-            <TextField
-                id="outlined-multiline-static"
-                
-                multiline
-                rows={4}
-                sx = {{my:.5}}
-                placeholder = "enter your message here"
-                fullWidth
-            />
-            <Button 
+            </Box>
+          <Button 
             variant="contained"
             sx = {{my:.5}}
             onClick={() =>
                 navigate('/MessageDetail')}
-            >Start Conversation</Button>
+            >Start Conversation
+          </Button>
+          </Box>
         </Box>
-      </div>
     </>
   )
 }
