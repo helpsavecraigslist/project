@@ -4218,6 +4218,11 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
+"@fontsource/inika@^4.5.11":
+  version "4.5.11"
+  resolved "https://registry.yarnpkg.com/@fontsource/inika/-/inika-4.5.11.tgz#67f0fa4fcf15b418ea0c52c4daf8cdee831087f8"
+  integrity sha512-WBOp/8bLOeoAkbF9agdi5GsLUGnhFjCkrTyP5FYwW1iv0rVpdnatx2DLBtqcU42ICSuVBYux1zB2ov+6Ftb5uQ==
+
 "@fontsource/roboto@^4.5.8":
   version "4.5.8"
   resolved "https://registry.yarnpkg.com/@fontsource/roboto/-/roboto-4.5.8.tgz#56347764786079838faf43f0eeda22dd7328437f"

@@ -7,10 +7,10 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useNavigate } from 'react-router-dom'
 
-// TODO - map clicking on tag button to search for other items with that tag? Stretch goal?
+// TODO - map clicking on tag button to search for other items with that tag
 function mapTagsToButtons(tags: []) {
   return tags.map((obj: string) => (
-    <Button sx={{ m: 0.25 }} size='small' variant='contained'>
+    <Button sx={{ mx: 0.25 }} size='small' variant='contained'>
       {obj}
     </Button>
   ))
@@ -22,19 +22,19 @@ function generateItemUrl(userID: string, postDate: string) {
   return directURL
 }
 
-// Adapted from sample code at https://mui.com/material-ui/react-card/
+// Documentation at: https://mui.com/material-ui/react-card/
 export default function MediaCard({ data }: any) {
   const navigate = useNavigate()
 
   return (
-    <Card sx={{ maxWidth: 345, my: 5 }}>
+    <Card sx={{ maxWidth: 345, m: 1 }}>
       <CardMedia
         component='img'
         height='140'
-        image='https://picsum.photos/200/300'
+        image={data.Picture}
         alt='green iguana'
       />
-      <CardContent>
+      <CardContent sx={{ mb: -2 }}>
         <Typography gutterBottom variant='h5' component='div'>
           {data.Title}
         </Typography>
@@ -42,16 +42,15 @@ export default function MediaCard({ data }: any) {
       </CardContent>
       <CardActions>
         <Button
-          size='small'
           onClick={() =>
             navigate(generateItemUrl(data.UserID, data.PostedDate))
           }
         >
           View Details
         </Button>
-        <Button size='small'
-          onClick={() =>
-            navigate('/newMessage') // not sure the data obj has what I; need the user who listed the ad and subject (that's in there!)
+        <Button
+          onClick={
+            () => navigate('/newMessage') // not sure the data obj has what I; need the user who listed the ad and subject (that's in there!)
           }
         >
           Message Seller
