@@ -48,9 +48,9 @@ export default function MediaCard({ data }: any) {
         >
           View Details
         </Button>
-        <Button
-          onClick={
-            () => navigate('/newMessage', {state: {userID: data.UserID, subject: data.Subject}})
+        <Button size='small'
+          onClick={() =>
+            navigate('/newMessage', {state: {userID: data.UserID, subject: data.Subject}}) 
           }
         >
           Message Seller
