@@ -52,7 +52,7 @@ export default function MediaCard({ data }: any) {
           size='small'
           onClick={() =>
             navigate('/newMessage', {
-              state: { userID: data.UserID, subject: data.Subject },
+              state: { userID: data.UserID, subject: data.Title },
             })
           }
         >
