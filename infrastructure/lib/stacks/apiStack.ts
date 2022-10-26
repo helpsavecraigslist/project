@@ -113,8 +113,31 @@ export class APIStack extends Stack {
       },
     })
 
-    // API setup
+    const chatsDatabase = new Table(this, 'chatsTable', {
+      partitionKey: {
+        name: 'ChatID',
+        type: AttributeType.STRING,
+      },
+      sortKey: {
+        name: 'PostedDate',
+        type: AttributeType.STRING,
+      },
+      removalPolicy: RemovalPolicy.DESTROY,
+    })
 
+    const usersDatabase = new Table(this, 'usersTable', {
+      partitionKey: {
+        name: 'UserID',
+        type: AttributeType.STRING,
+      },
+      sortKey: {
+        name: 'ChatID',
+        type: AttributeType.STRING,
+      },
+      removalPolicy: RemovalPolicy.DESTROY,
+    })
+
+    // API setup
     const itemsFunction = new Function(this, 'itemsFunction', {
       code: Code.fromAsset('../backend'),
       handler: 'items.lambda_handler',
@@ -130,7 +153,15 @@ export class APIStack extends Stack {
       code: Code.fromAsset('../backend'),
       handler: 'messages.lambda_handler',
       runtime: Runtime.PYTHON_3_9,
+      environment: {
+        CHATS_TABLE: chatsDatabase.tableName,
+        USERS_TABLE: usersDatabase.tableName,
+      },
     })
+
+    chatsDatabase.grantReadWriteData(messagesFunction)
+    
+    usersDatabase.grantReadWriteData(messagesFunction)
 
     const api = new LambdaRestApi(this, 'api', {
       handler: itemsFunction,
@@ -166,6 +197,10 @@ export class APIStack extends Stack {
     items.addProxy()
 
     messages.addMethod('ANY')
+
+    messages.addMethod('POST', undefined, {
+      authorizer,
+    })
 
     messages.addProxy()
   }
