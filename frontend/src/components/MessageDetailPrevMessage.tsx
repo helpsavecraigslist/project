@@ -4,7 +4,8 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
-
+import Divider from '@mui/material/Divider';
+import { Card, Box } from '@mui/material';
 
 //adapted from https://mui.com/material-ui/react-grid/
 
@@ -25,43 +26,50 @@ export default function MessageDetailPrevMessage(props: any) {
   const {userID, userAvatar, message, postedDate, } = props;
   return (
     
-    <Paper
+    <Card
       square
       sx={{
-        p: 2,
-        margin: 'auto auto 5px auto',
+        my: 1,
         maxWidth: '95%',
         flexGrow: 1,
-        backgroundColor: '#D8CDE2'
+        backgroundColor: '#D8CDE2',
+        display:'flex',
+        alignItems:'row'
       }}
     >
-      <Grid container spacing={2}>
-        <Grid item xs={1.5} container alignItems="center" justifyContent="center" direction='column'>
+      
+        <Box sx={{
+          bgcolor:'#D8CDE2', 
+          display: 'flex', 
+          flexDirection: 'column', 
+          width: '10%', 
+          alignItems: 'center',
+          p:1,
+          }} 
+        >
           <Avatar 
             alt={userID}
             src={userAvatar}
             variant='square' 
             sx={{width:50, height:50, }}
           ></Avatar>
-
-          <h4>{userID}</h4> 
-        </Grid>
-        <Grid item xs={12} sm container>
-          <Grid item xs container direction="column">
-            <Grid item xs>
-              <Typography gutterBottom variant="subtitle1" component="div">
+          <Typography gutterBottom variant='body1'>
+            {userID} 
+          </Typography>
+        </Box>
+        <Box sx={{bgcolor:'#F3F0F7', width: '90%', p:1}} >
+         
+              <Typography gutterBottom variant="subtitle2" component="div">
                 {postedDate}
               </Typography>
-              <Typography variant="body2" gutterBottom>
+              <Typography variant="body1" gutterBottom>
                 {message}
               </Typography>
-            </Grid>
-            
-          </Grid>
+         
           
-        </Grid>
-      </Grid>
-    </Paper>
+        </Box>
+      
+    </Card>
     
   );
 }

@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react'
-import MessageItem from './MessageDetailHeader'
+import { useEffect } from 'react'
 import Box from '@mui/material/Box'
 import { API } from 'aws-amplify'
 import MessageDetailHeader from './MessageDetailHeader'
@@ -28,7 +27,7 @@ const messageData =
             {
                 userID: "qwerewq", 
                 userAvatar: "string", 
-                content: "I sent the moeny when are you shipping?", 
+                content: "I sent the money when are you shipping?", 
                 postedDate: "Oct 23, 2022",
             }
 
@@ -62,7 +61,7 @@ export default function MessageDetail() {
        <div style={{width:"100%",display: 'block', justifyContent: 'center', alignItems: 'center'}}>
         
 
-        <Box sx={{ width: '100%' }} >
+        <Box sx={{ width: '100%', }} >
           <MessageDetailHeader
               userID = {messageData.username}
               recepient = {messageData.recipient}
@@ -85,12 +84,14 @@ export default function MessageDetail() {
                 userAvatar = {message.userAvatar}
                 message = {message.content}
                 postedDate = {message.postedDate}
+                
                 ></MessageDetailPrevMessage>
                 
                 )
                 )
             }
             <MessageSendBox
+                
                 buttonText = "Reply"
                 placeholder = "Write your reply here"
             ></MessageSendBox>
