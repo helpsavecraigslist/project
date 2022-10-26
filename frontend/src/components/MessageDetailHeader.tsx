@@ -27,7 +27,7 @@ export default function MessageDetailHeader(props: any) {
       square
       sx={{
         p: 2,
-        margin: 'auto auto 5px auto',
+        // margin: 'auto auto 5px auto',
         maxWidth: '95%',
         flexGrow: 1,
         backgroundColor: '#D8CDE2' 
@@ -37,7 +37,7 @@ export default function MessageDetailHeader(props: any) {
         <Grid item xs={12} sm container>
           <Grid item xs container direction="column">
             <Grid item xs>
-              <Typography gutterBottom variant="subtitle1" component="div">
+              <Typography gutterBottom variant="h5" component="div">
                 {subject}
               </Typography>
               <Typography variant="body2" gutterBottom>
