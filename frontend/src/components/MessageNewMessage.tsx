@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import Box from '@mui/material/Box'
 import { API } from 'aws-amplify'
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+import { useNavigate, useLocation } from 'react-router-dom'
+import Chip from '@mui/material/Chip'
 
-export default function MessageNewMessage({ data }: any) {
+export default function MessageNewMessage() {
     const navigate = useNavigate()
+    const itemData = useLocation()
 
   const fetchMessageNewMessage = async () => {
     const apiName = 'default'
@@ -23,6 +24,7 @@ export default function MessageNewMessage({ data }: any) {
  
   useEffect(() => {
     fetchMessageNewMessage()
+    
   }, [])
   return (
     <>
@@ -32,29 +34,38 @@ export default function MessageNewMessage({ data }: any) {
        <div style={{width:"100%",display: 'block', justifyContent: 'center', alignItems: 'center'}}>
         <Box sx={{ width: '100%' }} >
             <TextField
-                fullWidth
-                id="outlined-helperText"
+                
+                id="standard"
                 label="Recipient"
-                defaultValue="Default Value" //need to fill this from data object passed from previous screen
-                variant="filled"
+                defaultValue=  {itemData.state.userID} 
+                fullWidth
+                sx = {{my:.5}}
+                // disabled, could add but this is greyed out and looks not so great
+                InputProps={{
+                  readOnly: true,
+                }}
             />
             <TextField
                 fullWidth
                 id="outlined-helperText"
                 label="Subject"
-                defaultValue="Default Value" //need to fill this from data object passed from previous screen
-                variant="filled"
+                sx = {{my:.5}}
+                defaultValue={itemData.state.subject} 
+                
             />
+       
             <TextField
                 id="outlined-multiline-static"
-                label="Multiline"
+                
                 multiline
                 rows={4}
+                sx = {{my:.5}}
                 placeholder = "enter your message here"
                 fullWidth
             />
             <Button 
             variant="contained"
+            sx = {{my:.5}}
             onClick={() =>
                 navigate('/MessageDetail')}
             >Start Conversation</Button>

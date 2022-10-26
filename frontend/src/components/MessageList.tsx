@@ -48,8 +48,8 @@ const messageData = [
 },
 ]
 
+const data = {UserID: "qwerewq", Subject: "qwerewq's listing"}
 
-const data = {subject:"killer",}
 
 export default function MessageList() {
   const navigate = useNavigate()
@@ -74,10 +74,10 @@ export default function MessageList() {
       <h3>Messages Inbox</h3>
       <Button size='small'
           onClick={() =>
-            navigate('/newMessage') // not sure the data obj has what I; need the user who listed the ad and subject (that's in there!)
+            navigate('/newMessage',{state: {userID: data.UserID, subject: data.Subject}}) // not sure the data obj has what I; need the user who listed the ad and subject (that's in there!)
           }
         >
-          Message Seller
+          Message Seller -test only
         </Button>
       
        <div style={{width:"100%",display: 'block', justifyContent: 'center', alignItems: 'center'}}>
