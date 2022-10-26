@@ -8,6 +8,7 @@ import ForumRoundedIcon from '@mui/icons-material/ForumRounded'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
+import { useNavigate } from 'react-router-dom'
 
 export default function SingleItem() {
   const [params, setParams] = useSearchParams()
@@ -47,6 +48,8 @@ export default function SingleItem() {
     }
   }
 
+  const navigate = useNavigate()
+
   useEffect(() => {
     fetchItem()
   }, [])
@@ -75,7 +78,13 @@ export default function SingleItem() {
           <Typography variant='h1' gutterBottom>
             ${itemPrice}
           </Typography>
-          <IconButton>
+          <IconButton
+            onClick={() =>
+              navigate('/newMessage', {
+                state: { userID: itemUser, subject: itemTitle},
+              })
+            }
+          >
             <ForumRoundedIcon
               sx={{ fontSize: 40, color: 'primary.main' }}
             ></ForumRoundedIcon>
