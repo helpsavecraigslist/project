@@ -44,7 +44,7 @@ export default function MessageDetailHeader(props: any) {
                 {userID}, {recepient}: Started on {postedDate}
               </Typography>
               <Typography variant="body2" gutterBottom>
-                <Link to='/messages'>Back to Conversations</Link> 
+                <Link to='/messages'>Back to Messages</Link> 
               </Typography>
             </Grid>
           </Grid>

@@ -34,7 +34,7 @@ export default function MessageNewMessage() {
     */}
         <Box sx={{width: '100', backgroundColor: '#F3F0F7', justifyContent: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 1 }}>
           <Typography gutterBottom variant='h4'>
-            New Conversation
+            New Message
           </Typography>
           <Box sx={{ width: '100%', backgroundColor: '#F3F0F7', alignItems: 'center', display: 'flex', flexDirection: 'column', p:1 }} >
             <Box sx={{ width: '90%', backgroundColor: '#FFFFFF', p:1}} >
@@ -75,7 +75,7 @@ export default function MessageNewMessage() {
             sx = {{my:.5}}
             onClick={() =>
                 navigate('/MessageDetail')}
-            >Start Conversation
+            >Start Messaging
           </Button>
           </Box>
         </Box>

@@ -76,7 +76,7 @@ export default function MessageList() {
         <Box sx={{width: '100%', alignItems: 'center', justifyContent: 'space-around', display: 'flex', }}>
           
           <Typography gutterBottom variant='h4'>
-            Conversations
+            Messages
           </Typography>
         </Box>
         <Box sx={{ width: '100%' }} >
