@@ -29,6 +29,7 @@ export default function ItemForm() {
   const [location, setLocation] = useState('')
   const [image, setImage] = useState<null | File>(null)
   const [locations, setLocations] = useState([])
+  const [allTagsList, setAllTagsList] = useState([])
   const [redirect, setRedirect] = useState(false)
 
   // source: https://aws.plainenglish.io/how-to-create-an-image-uploader-using-aws-cdk-c163277b26f0
@@ -69,7 +70,7 @@ export default function ItemForm() {
     }
   }
 
-  const setFormOptions = async () => {
+  const setLocationOptions = async () => {
     const apiName = 'default'
     const path = 'items/locations'
     const myInit = {}
@@ -78,6 +79,18 @@ export default function ItemForm() {
       setLocations(avaliableLocations)
     } catch {
       console.error('Error fetching locations')
+    }
+  }
+
+  const setTagOptions = async () => {
+    const apiName = 'default'
+    const path = 'items/tags'
+    const myInit = {}
+    try {
+      const avaliableTags = await API.get(apiName, path, myInit)
+      setAllTagsList(avaliableTags)
+    } catch {
+      console.error('Error fetching tags')
     }
   }
 
@@ -104,7 +117,8 @@ export default function ItemForm() {
   }
 
   useEffect(() => {
-    setFormOptions()
+    setLocationOptions()
+    setTagOptions()
   }, [])
 
   console.log(image)
@@ -135,18 +149,29 @@ export default function ItemForm() {
             sx={{ flexGrow: 1 }}
             onChange={(e) => setTitle(e.target.value)}
           />
-          {/* TODO - make this into an input where the user can add tags
-        one at a time, adding to an array of tags (instead of manually
-        separating with commas) */}
           <div>
-            <TextField
-              required
-              id='item-tag'
-              label='Tags (separate by commas)'
-              variant='outlined'
-              sx={{ flexGrow: 1 }}
-              onChange={(e) => setTags(e.target.value)}
-            />
+            {/* Temporary simple dropdown for tag control, using this version to
+            check connection to backend. Will be upgrading this to field allowing 
+            multi-select, autofill, etc. */}
+            <FormControl sx={{ flexGrow: 1 }}>
+              <InputLabel id='item-tag-label'>Tag (Category)</InputLabel>
+              <Select
+                required
+                labelId='item-tag'
+                id='item-tag'
+                value={tags}
+                label='Tags'
+                onChange={(e) => setTags(e.target.value)}
+              >
+                {allTagsList.map((tag) => {
+                  return (
+                    <MenuItem key={tag} value={tag}>
+                      {tag}
+                    </MenuItem>
+                  )
+                })}
+              </Select>
+            </FormControl>
             {/* TODO - add functionality for auto-generating tags from title */}
             <Button
               variant='contained'
