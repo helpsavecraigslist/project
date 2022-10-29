@@ -20,6 +20,15 @@ def lambda_handler(event, context):
     print(context)
 
     avaliable_locations = ["Corvallis", "San Diego", "Austin", "Online"]
+    
+    available_tags = ['antiques', 'appliances', 'arts+crafts', 'atv/utv/sno', 'auto parts', 
+    'aviation', 'baby+kid', 'barter', 'beauty+health', 'bike parts', 'bikes', 
+    'boat parts', 'boats', 'books', 'business', 'cars+trucks', 'cds/dvd/vhs', 
+    'cell phones', 'clothes+accessories', 'collectibles', 'computer parts', 
+    'computers', 'electronics', 'farm+garden', 'free', 'furniture', 'garage sale', 
+    'general', 'heavy equip', 'household', 'jewelry', 'materials', 'motorcycle parts', 
+    'motorcycles', 'music instruments', 'photo+video', 'rvs+camp', 'sporting', 'tickets', 
+    'tools', 'toys+games', 'trailers', 'video gaming', 'wanted', 'wheels+tires']
 
     def build_success_response(data):
       return {
@@ -106,6 +115,9 @@ def lambda_handler(event, context):
 
     if event['path'] == '/items/locations':
       return build_success_response(avaliable_locations)
+
+    if event['path'] == '/items/tags':
+      return build_success_response(available_tags)
 
     if event['path'] == '/items/item':
       # Handle URL params if present to view single item
