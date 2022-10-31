@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useState } from 'react'
-import { Button } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import { Auth, API } from 'aws-amplify'
 import TextField from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
@@ -14,24 +14,21 @@ import { useNavigate } from 'react-router-dom'
 
 function generateItemUrl(userID: string, postDate: string) {
   const directURL = '/items/item?user=' + userID + '&post_date=' + postDate
-  console.log(directURL)
   return directURL
 }
 
 export default function ItemForm() {
   // State tracker for each field
   // postedBy and postedTime will be set automatically on backend
-  // photo URL will be assigned once uploaded?
   const navigate = useNavigate()
   const [title, setTitle] = useState('')
   const [price, setPrice] = useState('')
-  const [tags, setTags] = useState<string[]>([])
-  const [tagString, setTagString] = useState('')
+  const [allTagOptions, setAllTagOptions] = useState([])
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [description, setDescription] = useState('')
   const [location, setLocation] = useState('')
   const [image, setImage] = useState<null | File>(null)
   const [locations, setLocations] = useState([])
-  const [allTagsList, setAllTagsList] = useState([])
   const [redirect, setRedirect] = useState(false)
 
   // source: https://aws.plainenglish.io/how-to-create-an-image-uploader-using-aws-cdk-c163277b26f0
@@ -44,7 +41,7 @@ export default function ItemForm() {
     })
 
   const postItem = async () => {
-    console.log(`in postItem, tagString is ${tagString}`)
+    let tags = mapTagsForSubmit(selectedTags)
     const base64Image = await toBase64(image)
     const apiName = 'default'
     const path = 'items'
@@ -57,7 +54,7 @@ export default function ItemForm() {
       body: {
         title,
         price,
-        tagString,
+        tags,
         description,
         location,
         imageFile: base64Image,
@@ -91,21 +88,22 @@ export default function ItemForm() {
     const myInit = {}
     try {
       const avaliableTags = await API.get(apiName, path, myInit)
-      setAllTagsList(avaliableTags)
+      setAllTagOptions(avaliableTags)
     } catch {
       console.error('Error fetching tags: ')
     }
   }
 
   function mapTagsForSubmit(tagsFinal: any[]) {
-      let tagsFinalExtracted = Array()
-      for (let t of tagsFinal) {
-        tagsFinalExtracted.push(t.value)
-      }
-      let tagsFinalStringified = tagsFinalExtracted.join(',')
-      console.log(`tagsFinalStringified = ${tagsFinalStringified}`)
-      setTagString(tagsFinalStringified)
-      console.log(tagString)
+    // Selected tags array will be in format [ {value: x, label: y}]
+    // due to how react-select works so we need to extract just the value
+    // to push to the backend
+    let tagValuesOnly = Array()
+    for (let t of tagsFinal) {
+      tagValuesOnly.push(t.value)
+    }
+    let tagsStringified = tagValuesOnly.join(',')
+    return tagsStringified
   }
 
   const handleImageInput = (e) => {
@@ -118,9 +116,7 @@ export default function ItemForm() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
-    mapTagsForSubmit(tags)
     const response = await postItem()
-    console.log(response)
     if (redirect) {
       const itemUrl = generateItemUrl(
         response.Item['UserID'],
@@ -130,6 +126,7 @@ export default function ItemForm() {
     }
   }
 
+  // Format tag options the way react-select needs them
   function generateTagFormOptions(tagArr: any[]) {
     let tagFormOptions = Array()
     tagArr.map((t) => tagFormOptions.push({ value: t, label: t }))
@@ -138,12 +135,12 @@ export default function ItemForm() {
 
   // For styling react-select dropdown
   const styles = {
-    control: base => ({
+    control: (base) => ({
       ...base,
-       flexGrow: 1,
-       minHeight: '60px'
-    })
-  };
+      flexGrow: 1,
+      minHeight: '60px',
+    }),
+  }
 
   useEffect(() => {
     setLocationOptions()
@@ -152,13 +149,13 @@ export default function ItemForm() {
 
   return (
     <>
-      <h1>Post Item for Sale</h1>
       <form onSubmit={handleSubmit}>
         <Box
           sx={{
             '& > :not(style)': { display: 'flex', maxWidth: '80%', m: 3 },
           }}
         >
+          <Typography variant='h3'>Post Item for Sale</Typography>
           <FormControlLabel
             control={
               <Checkbox
@@ -176,66 +173,35 @@ export default function ItemForm() {
             sx={{ flexGrow: 1 }}
             onChange={(e) => setTitle(e.target.value)}
           />
-            {/* Temporary simple dropdown for tag control, using this version to
-            check connection to backend. Will be upgrading this to field allowing 
-            multi-select, autofill, etc. */}
-            {/* <FormControl sx={{ flexGrow: 1 }}>
-              <InputLabel id='item-tag-label'>Tag (Category)</InputLabel>
-              <Select
-                required
-                labelId='item-tag'
-                id='item-tag'
-                value={tags}
-                label='Tags'
-                onChange={(e) => setTags(e.target.value)}
-              >
-                {allTagsList.map((tag) => {
-                  return (
-                    <MenuItem key={tag} value={tag}>
-                      {tag}
-                    </MenuItem>
-                  )
-                })}
-              </Select>
-            </FormControl> */}
-
-            <MultiSelect
-              defaultValue='general'
-              placeholder="Select 1 or more tags/categories"
-              isMulti
-              onChange={(e) => {console.log(e)
-                setTags([...e])}}
-              name='tags'
-              options={generateTagFormOptions(allTagsList)}
-              className='basic-multi-select'
-              classNamePrefix='select'
-              menuPortalTarget={document.querySelector('body')}
-              styles={styles}
-              theme={(theme) => ({
-                ...theme,
-                borderRadius: 3,
-                colors: {
-                  ...theme.colors,
-                  primary25: '#D8CDE2',
-                  primary: '#313131',
-                },
-              })}
-            />
-
-            {/* TODO - add functionality for auto-generating tags from title */}
-            <Button
-              variant='contained'
-              color='secondary'
-              sx={{ flexGrow: 0.25 }}
-            >
-              Generate Tags For Me
-            </Button>
-
+          <MultiSelect
+            defaultValue='general'
+            placeholder='Select 1 or more tags/categories'
+            isMulti
+            onChange={(e) => {
+              setSelectedTags([...e])
+            }}
+            name='tags'
+            options={generateTagFormOptions(allTagOptions)}
+            className='basic-multi-select'
+            classNamePrefix='select'
+            menuPortalTarget={document.querySelector('body')}
+            styles={styles}
+            theme={(theme) => ({
+              ...theme,
+              borderRadius: 3,
+              colors: {
+                ...theme.colors,
+                primary25: '#D8CDE2',
+                primary: '#313131',
+                neutral10: '#D8CDE2',
+              },
+            })}
+          />
+          {/* TODO - add functionality for auto-generating tags from title */}
+          <Button variant='contained' color='secondary' sx={{ flexGrow: 0.25 }}>
+            Generate Tags For Me
+          </Button>
           <div>
-            {/* TODO: Add validation so only a number can be input 
-            MUI documentation suggests to use TextField instead of 
-            type="number" due to usability issues. 
-            https://mui.com/material-ui/react-text-field/#type-quot-number-quot */}
             <TextField
               required
               type='number'
