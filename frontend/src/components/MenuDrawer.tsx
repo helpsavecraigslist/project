@@ -12,7 +12,7 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
 import SellRoundedIcon from '@mui/icons-material/SellRounded'
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded'
 import ForumRoundedIcon from '@mui/icons-material/ForumRounded'
-import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
+import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded'
 import { CognitoIdToken } from 'amazon-cognito-identity-js'
 
 interface MenuDrawerProps {
@@ -38,12 +38,12 @@ export default function TemporaryDrawer(props: MenuDrawerProps) {
 
   return (
     <div>
-      <React.Fragment key="MenuButton">
+      <React.Fragment key='MenuButton'>
         <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
+          size='large'
+          edge='start'
+          color='inherit'
+          aria-label='menu'
           sx={{ mr: 2 }}
           onClick={toggleDrawer(true)}
         >
@@ -52,42 +52,36 @@ export default function TemporaryDrawer(props: MenuDrawerProps) {
         <Drawer open={state['open']} onClose={toggleDrawer(false)}>
           <Box
             sx={{ width: 250 }}
-            role="presentation"
+            role='presentation'
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
           >
             <List>
-              <ListItem key="Home" disablePadding>
-                <ListItemButton component={Link} to="/">
-                  <HomeRoundedIcon sx={{ m: 1 }}></HomeRoundedIcon>
-                  <ListItemText primary="Home" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem key="Items" disablePadding>
-                <ListItemButton component={Link} to="/items">
+              <ListItem key='Items' disablePadding>
+                <ListItemButton component={Link} to='/items'>
                   <SellRoundedIcon sx={{ m: 1 }}></SellRoundedIcon>
-                  <ListItemText primary="Items" />
+                  <ListItemText primary='Items' />
                 </ListItemButton>
               </ListItem>
-              <ListItem key="Messages" disablePadding>
-                <ListItemButton component={Link} to="/messages">
+              <ListItem key='Messages' disablePadding>
+                <ListItemButton component={Link} to='/messages'>
                   <ForumRoundedIcon sx={{ m: 1 }}></ForumRoundedIcon>
-                  <ListItemText primary="Messages" />
+                  <ListItemText primary='Messages' />
                 </ListItemButton>
               </ListItem>
               {props.user && (
-                <ListItem key="PostItem" disablePadding>
-                  <ListItemButton component={Link} to="/itemform">
+                <ListItem key='PostItem' disablePadding>
+                  <ListItemButton component={Link} to='/itemform'>
                     <AddCircleRoundedIcon sx={{ m: 1 }}></AddCircleRoundedIcon>
-                    <ListItemText primary="Post Item For Sale" />
+                    <ListItemText primary='Post Item For Sale' />
                   </ListItemButton>
                 </ListItem>
               )}
               {props.user && (
-                <ListItem key="Profile" disablePadding>
-                  <ListItemButton component={Link} to="/profile">
+                <ListItem key='Profile' disablePadding>
+                  <ListItemButton component={Link} to='/profile'>
                     <PersonRoundedIcon sx={{ m: 1 }}></PersonRoundedIcon>
-                    <ListItemText primary="Profile" />
+                    <ListItemText primary='Profile' />
                   </ListItemButton>
                 </ListItem>
               )}
