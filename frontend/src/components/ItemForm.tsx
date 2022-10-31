@@ -6,6 +6,7 @@ import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import Select from '@mui/material/Select'
+import MultiSelect from 'react-select'
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -24,7 +25,8 @@ export default function ItemForm() {
   const navigate = useNavigate()
   const [title, setTitle] = useState('')
   const [price, setPrice] = useState('')
-  const [tags, setTags] = useState('')
+  const [tags, setTags] = useState<string[]>([])
+  const [tagString, setTagString] = useState('')
   const [description, setDescription] = useState('')
   const [location, setLocation] = useState('')
   const [image, setImage] = useState<null | File>(null)
@@ -42,6 +44,7 @@ export default function ItemForm() {
     })
 
   const postItem = async () => {
+    console.log(`in postItem, tagString is ${tagString}`)
     const base64Image = await toBase64(image)
     const apiName = 'default'
     const path = 'items'
@@ -54,7 +57,7 @@ export default function ItemForm() {
       body: {
         title,
         price,
-        tags,
+        tagString,
         description,
         location,
         imageFile: base64Image,
@@ -90,14 +93,24 @@ export default function ItemForm() {
       const avaliableTags = await API.get(apiName, path, myInit)
       setAllTagsList(avaliableTags)
     } catch {
-      console.error('Error fetching tags')
+      console.error('Error fetching tags: ')
     }
+  }
+
+  function mapTagsForSubmit(tagsFinal: any[]) {
+      let tagsFinalExtracted = Array()
+      for (let t of tagsFinal) {
+        tagsFinalExtracted.push(t.value)
+      }
+      let tagsFinalStringified = tagsFinalExtracted.join(',')
+      console.log(`tagsFinalStringified = ${tagsFinalStringified}`)
+      setTagString(tagsFinalStringified)
+      console.log(tagString)
   }
 
   const handleImageInput = (e) => {
     // handle validations
     const file = e.target.files[0]
-    console.log(file)
     if (file.size > 3000000) alert('file size cannot exceed 3 MB')
     else if (file.type !== 'image/jpeg') alert('file must be jpg or jpeg')
     else setImage(file)
@@ -105,6 +118,7 @@ export default function ItemForm() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
+    mapTagsForSubmit(tags)
     const response = await postItem()
     console.log(response)
     if (redirect) {
@@ -116,12 +130,25 @@ export default function ItemForm() {
     }
   }
 
+  function generateTagFormOptions(tagArr: any[]) {
+    let tagFormOptions = Array()
+    tagArr.map((t) => tagFormOptions.push({ value: t, label: t }))
+    return tagFormOptions
+  }
+
+  // For styling react-select dropdown
+  const styles = {
+    control: base => ({
+      ...base,
+       flexGrow: 1,
+       minHeight: '60px'
+    })
+  };
+
   useEffect(() => {
     setLocationOptions()
     setTagOptions()
   }, [])
-
-  console.log(image)
 
   return (
     <>
@@ -149,11 +176,10 @@ export default function ItemForm() {
             sx={{ flexGrow: 1 }}
             onChange={(e) => setTitle(e.target.value)}
           />
-          <div>
             {/* Temporary simple dropdown for tag control, using this version to
             check connection to backend. Will be upgrading this to field allowing 
             multi-select, autofill, etc. */}
-            <FormControl sx={{ flexGrow: 1 }}>
+            {/* <FormControl sx={{ flexGrow: 1 }}>
               <InputLabel id='item-tag-label'>Tag (Category)</InputLabel>
               <Select
                 required
@@ -171,7 +197,31 @@ export default function ItemForm() {
                   )
                 })}
               </Select>
-            </FormControl>
+            </FormControl> */}
+
+            <MultiSelect
+              defaultValue='general'
+              placeholder="Select 1 or more tags/categories"
+              isMulti
+              onChange={(e) => {console.log(e)
+                setTags([...e])}}
+              name='tags'
+              options={generateTagFormOptions(allTagsList)}
+              className='basic-multi-select'
+              classNamePrefix='select'
+              menuPortalTarget={document.querySelector('body')}
+              styles={styles}
+              theme={(theme) => ({
+                ...theme,
+                borderRadius: 3,
+                colors: {
+                  ...theme.colors,
+                  primary25: '#D8CDE2',
+                  primary: '#313131',
+                },
+              })}
+            />
+
             {/* TODO - add functionality for auto-generating tags from title */}
             <Button
               variant='contained'
@@ -180,7 +230,7 @@ export default function ItemForm() {
             >
               Generate Tags For Me
             </Button>
-          </div>
+
           <div>
             {/* TODO: Add validation so only a number can be input 
             MUI documentation suggests to use TextField instead of 
