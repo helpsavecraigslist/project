@@ -4,7 +4,7 @@ import Items from './components/Items'
 import { Amplify, Auth } from 'aws-amplify'
 import { CognitoIdToken } from 'amazon-cognito-identity-js'
 import settings from './aws-settings.json'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import {
   createTheme,
   colors,
@@ -18,8 +18,8 @@ import MessageList from './components/MessageList'
 import MessageDetail from './components/MessageDetail'
 import SingleItem from './components/SingleItem'
 import MessageNewMessage from './components/MessageNewMessage'
-import "@fontsource/inika" // https://fontsource.org/fonts/inika
-import "@fontsource/roboto"
+import '@fontsource/inika' // https://fontsource.org/fonts/inika
+import '@fontsource/roboto'
 
 // This object controls the Material UI theme overrides.
 // See here for how this object is structured:
@@ -33,33 +33,33 @@ const theme = createTheme({
     },
     secondary: {
       main: '#d5cde1',
-      light: '#efeef4'
+      light: '#efeef4',
     },
   },
   typography: {
-    fontFamily: "Inika",
+    fontFamily: 'Inika',
     h1: {
       fontSize: '5rem',
-      fontWeight: 700
+      fontWeight: 700,
     },
     h2: {
-      fontWeight: 700
+      fontWeight: 700,
     },
     h3: {
-      fontWeight: 700
+      fontWeight: 700,
     },
     body1: {
-      fontFamily: "Roboto",
-      fontSize: '1.25rem'
+      fontFamily: 'Roboto',
+      fontSize: '1.25rem',
     },
     body2: {
-      fontFamily: "Roboto",
-      fontSize: '1rem'
+      fontFamily: 'Roboto',
+      fontSize: '1rem',
     },
     button: {
-      fontSize: '1rem'
-    }
-  }
+      fontSize: '1rem',
+    },
+  },
 })
 
 // User authorization config
@@ -113,6 +113,7 @@ const App = () => {
             <NavBar user={user} />
             <Toolbar />
             <Routes>
+              <Route path='/' element={<Navigate to='/items' />} />
               <Route
                 path='/profile'
                 element={user && <Profile user={user} />}
@@ -120,9 +121,9 @@ const App = () => {
               <Route path='/items' element={<Items />} />
               <Route path='/items/item' element={<SingleItem />} />
               <Route path='/itemform' element={<ItemForm />} />
-              <Route path="/messages" element={<MessageList />} />
-              <Route path='/messageDetail' element={<MessageDetail/>} />
-              <Route path='/newMessage' element={<MessageNewMessage/>} />
+              <Route path='/messages' element={<MessageList />} />
+              <Route path='/messageDetail' element={<MessageDetail />} />
+              <Route path='/newMessage' element={<MessageNewMessage />} />
             </Routes>
           </BrowserRouter>
         </Container>
