@@ -20,47 +20,7 @@ import SingleItem from './components/SingleItem'
 import MessageNewMessage from './components/MessageNewMessage'
 import '@fontsource/inika' // https://fontsource.org/fonts/inika
 import '@fontsource/roboto'
-
-// This object controls the Material UI theme overrides.
-// See here for how this object is structured:
-// https://mui.com/material-ui/customization/default-theme/
-// Color guide: https://mui.com/material-ui/customization/color/
-// TODO: consider moving this to a separate file and importing.
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#572F88',
-    },
-    secondary: {
-      main: '#d5cde1',
-      light: '#efeef4',
-    },
-  },
-  typography: {
-    fontFamily: 'Inika',
-    h1: {
-      fontSize: '5rem',
-      fontWeight: 700,
-    },
-    h2: {
-      fontWeight: 700,
-    },
-    h3: {
-      fontWeight: 700,
-    },
-    body1: {
-      fontFamily: 'Roboto',
-      fontSize: '1.25rem',
-    },
-    body2: {
-      fontFamily: 'Roboto',
-      fontSize: '1rem',
-    },
-    button: {
-      fontSize: '1rem',
-    },
-  },
-})
+import {appTheme} from './themes/theme'
 
 // User authorization config
 Amplify.configure({
@@ -111,7 +71,7 @@ const App = () => {
   // Routing
   return (
     <>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={appTheme}>
         <Container>
           <BrowserRouter>
             <NavBar user={user} />

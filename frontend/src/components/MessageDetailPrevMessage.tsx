@@ -1,18 +1,8 @@
-import { styled } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { Card, Box } from '@mui/material';
 
 //adapted from https://mui.com/material-ui/react-grid/
-
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
 
 {/* 
 
@@ -27,7 +17,7 @@ export default function MessageDetailPrevMessage(props: any) {
       square
       sx={{
         my: 1,
-        maxWidth: '95%',
+        maxWidth: '100%',
         flexGrow: 1,
         backgroundColor: '#D8CDE2',
         display:'flex',
@@ -39,8 +29,9 @@ export default function MessageDetailPrevMessage(props: any) {
           bgcolor:'#D8CDE2', 
           display: 'flex', 
           flexDirection: 'column', 
-          width: '10%', 
+          width: '25%', 
           alignItems: 'center',
+          justifyContent: 'center',
           p:1,
           }} 
         >
@@ -51,7 +42,9 @@ export default function MessageDetailPrevMessage(props: any) {
             sx={{width:50, height:50, }}
           ></Avatar>
           <Typography gutterBottom variant='body1'>
+            
             {userID} 
+            
           </Typography>
         </Box>
         <Box sx={{bgcolor:'#F3F0F7', width: '90%', p:1}} >

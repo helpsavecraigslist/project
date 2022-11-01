@@ -28,7 +28,7 @@ export default function MessageDetailHeader(props: any) {
       sx={{
         p: 2,
         // margin: 'auto auto 5px auto',
-        maxWidth: '95%',
+        maxWidth: '100%',
         flexGrow: 1,
         backgroundColor: '#D8CDE2' 
       }}
