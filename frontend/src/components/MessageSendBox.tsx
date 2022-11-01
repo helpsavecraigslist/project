@@ -21,7 +21,7 @@ export default function MessageSendBox(props: any) {
       bgcolor:'#F3F0F7', 
       display: 'flex', 
       flexDirection: 'column', 
-      width: '95%', 
+      width: '100%', 
       alignItems: 'center',
       p:1,
       }} 

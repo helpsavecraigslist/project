@@ -1,10 +1,8 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import MessageItem from './MessageItem'
 import Box from '@mui/material/Box'
 import { API } from 'aws-amplify'
-import Button from '@mui/material/Button'
 import { useNavigate } from 'react-router-dom'
-import { Navigation } from '@mui/icons-material'
 import Typography from '@mui/material/Typography';
 
 const messageData = [

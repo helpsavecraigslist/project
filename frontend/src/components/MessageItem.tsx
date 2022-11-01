@@ -22,7 +22,7 @@ export default function MessageItem(props: any) {
         my: 1,
         display:'flex',
         alignItems:'row',
-        maxWidth: '95%',
+        maxWidth: '100%',
         flexGrow: 1,
         backgroundColor: bgColor(unread) // need function here to change color for read and unread
       }}
@@ -30,8 +30,9 @@ export default function MessageItem(props: any) {
       <Box sx={{
           display: 'flex', 
           flexDirection: 'column', 
-          width: '10%', 
+          width: '25%', 
           alignItems: 'center',
+          justifyContent: 'center',
           p:1,
           }} 
         >
@@ -44,9 +45,10 @@ export default function MessageItem(props: any) {
           <Typography gutterBottom variant='body1'>
             {userID} 
           </Typography>
-        </Box>
+      </Box>
         <Box sx={{
-          display: 'inline-flex', 
+          display: 'flex', 
+          flexWrap: 'wrap',
           flexDirection: 'row', width:'90%', 
           alignItems: 'center',
           justifyContent: 'space-evenly'  
