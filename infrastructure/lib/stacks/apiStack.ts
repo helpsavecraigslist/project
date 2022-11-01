@@ -214,6 +214,10 @@ export class APIStack extends Stack {
       authorizer,
     })
 
+    items.addMethod('DELETE', undefined, {
+      authorizer,
+    })
+
     items.addProxy()
 
     messages.addMethod('ANY')

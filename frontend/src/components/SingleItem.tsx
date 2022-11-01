@@ -2,18 +2,26 @@ import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Grid } from '@mui/material'
 import { Box } from '@mui/material'
-import { API } from 'aws-amplify'
+import { API, Auth } from 'aws-amplify'
 import Button from '@mui/material/Button'
 import ForumRoundedIcon from '@mui/icons-material/ForumRounded'
+import DeleteIcon from '@mui/icons-material/Delete'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
 import { useNavigate } from 'react-router-dom'
+import { CognitoIdToken } from 'amazon-cognito-identity-js'
 
-export default function SingleItem() {
+export interface SingleItemProps {
+  user: null | CognitoIdToken
+}
+
+export default function SingleItem(props: SingleItemProps) {
   const [params, setParams] = useSearchParams()
   const user = params.get('user')
   const post_date = params.get('post_date')
+
+  const navigate = useNavigate()
 
   const [itemUser, setItemUser] = useState('')
   const [itemTitle, setItemTitle] = useState('')
@@ -23,6 +31,8 @@ export default function SingleItem() {
   const [itemPrice, setItemPrice] = useState('')
   const [itemTags, setItemTags] = useState([])
   const [itemDesc, setItemDesc] = useState('')
+
+  const formattedItemDate = new Date(itemDate)
 
   const fetchItem = async () => {
     const apiName = 'default'
@@ -48,7 +58,32 @@ export default function SingleItem() {
     }
   }
 
-  const navigate = useNavigate()
+  const handleDelete = async () => {
+    const confirmed = window.confirm(
+      'You are sure you want to delete this item?'
+    )
+    if (confirmed) {
+      const apiName = 'default'
+      const path = 'items'
+      const myInit = {
+        headers: {
+          Authorization: `Bearer ${(await Auth.currentSession())
+            .getIdToken()
+            .getJwtToken()}`,
+        },
+        body: {
+          user: props.user,
+          datePosted: itemDate,
+        },
+      }
+      try {
+        const response = await API.del(apiName, path, myInit)
+        navigate('/items')
+      } catch {
+        console.error('Error deleting item')
+      }
+    }
+  }
 
   useEffect(() => {
     fetchItem()
@@ -81,7 +116,7 @@ export default function SingleItem() {
           <IconButton
             onClick={() =>
               navigate('/newMessage', {
-                state: { userID: itemUser, subject: itemTitle},
+                state: { userID: itemUser, subject: itemTitle },
               })
             }
           >
@@ -134,9 +169,22 @@ export default function SingleItem() {
             Item Details
           </Typography>
           <Typography variant='h6'>Location: {itemLocation}</Typography>
-          <Typography variant='h6'>Posted On: {itemDate}</Typography>
+          <Typography variant='h6'>
+            Posted On:{' '}
+            {itemDate &&
+              `${formattedItemDate.toLocaleDateString()} at ${formattedItemDate.toLocaleTimeString()}`}
+          </Typography>
           <Divider variant='middle' sx={{ my: '1rem' }}></Divider>
           <Typography variant='body1'>{itemDesc}</Typography>
+          {props.user?.payload['cognito:username'] == user && (
+            <Button
+              variant='outlined'
+              startIcon={<DeleteIcon />}
+              onClick={() => handleDelete()}
+            >
+              Delete
+            </Button>
+          )}
         </Grid>
 
         {/* Tags - or use this last container for stretch goal such as map integration, etc... */}
@@ -153,7 +201,7 @@ export default function SingleItem() {
         >
           {itemTags.map((tag) => {
             return (
-              <Box sx={{ mb: 2 }}>
+              <Box sx={{ mb: 2 }} key={tag}>
                 <Button variant='contained'>{tag}</Button>
               </Box>
             )

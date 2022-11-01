@@ -64,6 +64,26 @@ def lambda_handler(event, context):
     table = dynamodb.Table(tableName)
     imagesBucket = s3.Bucket(imagesBucketName)
 
+    def delete_item(userName, eventBody):
+      dbResponse = table.delete_item(
+        Key= {
+          'UserID': userName,
+          'PostedDate': eventBody['datePosted']
+       },
+        ReturnValues='ALL_OLD'
+      )
+      print(dbResponse)
+      imagesBucket.delete_objects(
+        Delete={
+          'Objects': [
+            {
+              'Key': dbResponse['Attributes']['ImagePath']
+            }
+          ]
+        }
+      )
+      return "item successfully deleted"
+
     def post_item(userName, eventBody):
       numPrice = Decimal(eventBody['price'])
       roundedPrice = round(numPrice, 2)
@@ -119,21 +139,21 @@ def lambda_handler(event, context):
     if event['path'] == '/items/tags':
       return build_success_response(available_tags)
 
-    if event['path'] == '/items/item':
-      # Handle URL params if present to view single item
-      user = event['queryStringParameters']['user']
-      post_date = event['queryStringParameters']['post_date']
-      items = table.get_item(
-        Key={
-        'UserID': user,
-        'PostedDate': post_date
-      })
-      return build_success_response(items)
-
     if event['httpMethod'] == 'GET':
-      items = table.scan()
-      return build_success_response(items)
-    
+      if event['path'] == '/items/item':
+        # Handle URL params if present to view single item
+        user = event['queryStringParameters']['user']
+        post_date = event['queryStringParameters']['post_date']
+        items = table.get_item(
+          Key={
+          'UserID': user,
+          'PostedDate': post_date
+        })
+        return build_success_response(items)
+      if event['path'] == '/items':
+        items = table.scan()
+        return build_success_response(items)
+      
     if event['httpMethod'] == 'POST':
       body = json.loads(event['body'])
       userName = event['requestContext']['authorizer']['claims']['cognito:username']
@@ -143,3 +163,12 @@ def lambda_handler(event, context):
       except Exception as e:
         print('error', e)
         return build_failure_response(str(e))
+
+    if event['httpMethod'] == 'DELETE':
+      body = json.loads(event['body'])
+      userName = event['requestContext']['authorizer']['claims']['cognito:username']
+      try:
+        response = delete_item(userName, body)
+        return build_success_response(response)
+      except:
+        build_failure_response('error deleting item')
