@@ -96,8 +96,12 @@ const App = () => {
   const [user, setUser] = useState<null | CognitoIdToken>(null)
 
   const getCurrentUser = async () => {
-    const idToken = (await Auth.currentSession()).getIdToken()
-    setUser(idToken)
+    try {
+      const idToken = (await Auth.currentSession()).getIdToken()
+      setUser(idToken)
+    } catch {
+      setUser(null)
+    }
   }
   useEffect(() => {
     getCurrentUser()
@@ -119,7 +123,7 @@ const App = () => {
                 element={user && <Profile user={user} />}
               />
               <Route path='/items' element={<Items />} />
-              <Route path='/items/item' element={<SingleItem />} />
+              <Route path='/items/item' element={<SingleItem user={user} />} />
               <Route path='/itemform' element={<ItemForm />} />
               <Route path='/messages' element={<MessageList />} />
               <Route path='/messageDetail' element={<MessageDetail />} />
