@@ -1,6 +1,19 @@
-To deploy this first do the prerequisites in the CDK workshop [here](https://cdkworkshop.com/) to ensure you can deploy CDK stacks and have your environment setup correctly.
+# Instructions for Testing
 
-# First Time Setup
+To homepage takes you to the all items page and you can view all items when not logged in. Click "login" in the top right corner of the screen to login. This will allow you to create an account with an email and password, or login with Google. Once logged in you can open the menu and go to the page to post an item. This form allows you to uplod an image (jpeg and under 3MB), once uploaded you can view it in the all items page.
+
+On the all items page, you can click "view details" to see a single item view. On the single item view you will see a "delete" button if the item belongs to the currently signed in user. Clicking delete will remove the item from the database as well as remove the image from the S3 bucket.
+
+You can view our hosted website here [https://d198vhptcel5q3.cloudfront.net/](https://d198vhptcel5q3.cloudfront.net/)
+
+Login with your Gmail account, create an account, or login with these credentials here.
+
+Email: lipej@oregonstate.edu
+Password: Testing123
+
+# Installation - First Time Setup
+
+To deploy this first do the prerequisites in the CDK workshop [here](https://cdkworkshop.com/) to ensure you can deploy CDK stacks and have your environment setup correctly.
 
 ## First build and deploy the frontend
 
