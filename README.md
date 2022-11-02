@@ -113,3 +113,9 @@ Now your frontend should be working with Auth and connected to API Gateway.
 To develop the frontend in the `/frontend` folder run `yarn start` to start a local development environment.
 
 To build and deploy run `yarn build` in the `/frontend` directory. Then go to `/infrastructure` and run `cdk deploy FrontendStack`
+
+## Build and Deploy Everything
+
+Run `./build_and_deploy.sh`
+
+Note: you may need to run `chmod +x build_and_deploy.sh` to make the file an executable. Also I'm not sure the compatability of this script with Windows.
