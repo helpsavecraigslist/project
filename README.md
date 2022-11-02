@@ -11,6 +11,7 @@ You can view our hosted website here [https://d198vhptcel5q3.cloudfront.net/](ht
 Login with your Gmail account, create an account, or login with these credentials here.
 
 Email: lipej@oregonstate.edu
+
 Password: Testing123
 
 # Installation - First Time Setup
