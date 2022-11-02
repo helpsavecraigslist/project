@@ -4,6 +4,8 @@ To homepage takes you to the all items page and you can view all items when not 
 
 On the all items page, you can click "view details" to see a single item view. On the single item view you will see a "delete" button if the item belongs to the currently signed in user. Clicking delete will remove the item from the database as well as remove the image from the S3 bucket.
 
+From the all-items page or single-item view, click "Message Seller," and the link will take you to a static new message screen. Compose a message, on the new message screen, to the seller and click "Start Messaging." Presented with the static message detail screen, you can view all message traffic sent. From the menu or the message detail screen, selecting "Messages" will direct to the user's inbox. Click a message to view the entire conversation.  
+
 You can view our hosted website here [https://d198vhptcel5q3.cloudfront.net/](https://d198vhptcel5q3.cloudfront.net/)
 
 Login with your Gmail account, create an account, or login with these credentials here.
