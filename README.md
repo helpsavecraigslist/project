@@ -16,6 +16,8 @@ Password: Testing123
 
 # Installation - First Time Setup
 
+**Note: the source code is located [here](https://github.com/helpsavecraigslist/project)**
+
 To deploy this first do the prerequisites in the CDK workshop [here](https://cdkworkshop.com/) to ensure you can deploy CDK stacks and have your environment setup correctly.
 
 ## First build and deploy the frontend
