@@ -3,6 +3,7 @@ import {
   CognitoUserPoolsAuthorizer,
   LambdaIntegration,
   LambdaRestApi,
+  AuthorizationType,
 } from 'aws-cdk-lib/aws-apigateway'
 import { Distribution, OriginAccessIdentity } from 'aws-cdk-lib/aws-cloudfront'
 import { S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins'
@@ -183,6 +184,14 @@ export class APIStack extends Stack {
 
     usersDatabase.grantReadWriteData(messagesFunction)
 
+    const authorizer = new CognitoUserPoolsAuthorizer(
+      this,
+      'userPoolAuthorizer',
+      {
+        cognitoUserPools: [pool],
+      }
+    )
+
     const api = new LambdaRestApi(this, 'api', {
       handler: itemsFunction,
       proxy: false,
@@ -198,17 +207,17 @@ export class APIStack extends Stack {
 
     const messages = api.root.addResource('messages', {
       defaultIntegration: new LambdaIntegration(messagesFunction),
+      defaultCorsPreflightOptions: {
+        allowOrigins: ['*'],
+        allowCredentials: true,
+      },
+      // defaultMethodOptions: {
+      //   authorizationType: AuthorizationType.COGNITO,
+      //   authorizer: authorizer,
+      // },
     })
 
-    const authorizer = new CognitoUserPoolsAuthorizer(
-      this,
-      'userPoolAuthorizer',
-      {
-        cognitoUserPools: [pool],
-      }
-    )
-
-    items.addMethod('GET')
+    items.addMethod('GET') 
 
     items.addMethod('POST', undefined, {
       authorizer,
@@ -226,6 +235,12 @@ export class APIStack extends Stack {
       authorizer,
     })
 
-    messages.addProxy()
+    const messages_proxy = messages.addProxy({
+      anyMethod: true,
+      // defaultMethodOptions: {authorizer},
+    })
+    messages_proxy.addMethod('POST', undefined, {authorizer})
+    messages_proxy.addMethod('GET', undefined, {authorizer})
+
   }
 }
