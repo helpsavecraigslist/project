@@ -158,7 +158,7 @@ export default function SingleItem(props: SingleItemProps) {
           xs={12}
           md={7}
           sx={{
-            color: 'primary.light',
+            color: 'primary.dark',
             backgroundColor: 'secondary.light',
             py: '1rem',
             px: '1rem',
