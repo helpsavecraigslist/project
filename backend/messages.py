@@ -3,8 +3,6 @@ import boto3
 import os
 from datetime import datetime
 
-# os.environ['ITEMS_TABLE']
-
 chats_table_name = os.environ['CHATS_TABLE']
 dynamodb  = boto3.resource('dynamodb')
 chats_table = dynamodb.Table(chats_table_name)
@@ -39,12 +37,12 @@ def lambda_handler(event, context):
         "isBase64Encoded": False
     }
         
-    def create_one_message(chat_id, eventBody):
+    def create_one_message(chat_id, eventBody, from_user):
       response = chats_table.put_item(
         Item={
           'ChatID': chat_id,
           'PostedDate': str(datetime.now()),
-          'FromUser': eventBody['from_user'],
+          'FromUser': from_user,
           'ToUser': eventBody['to_user'],
           'Subject':  eventBody['subject'],
           'Content': eventBody['content'],
@@ -60,16 +58,15 @@ def lambda_handler(event, context):
       return userid2 + '-' + userid1
     
     
-    print(json.dumps(event))
+    # print(json.dumps(event))
     
     # POST
     if event['httpMethod'] == 'POST':
       body = json.loads(event['body'])
-      from_user = body['from_user']
-      # from_user = event['requestContext']['authorizer']['claims']['cognito:username']
+      from_user = event['requestContext']['authorizer']['claims']['cognito:username']
       to_user = body['to_user']
       chat_id = generate_chatid(from_user, to_user)
-      
+
       # Start a chat, add 2 documents of userID: ChatID to users table
       if event['path'] == '/messages/newchat':
         try:
@@ -82,7 +79,7 @@ def lambda_handler(event, context):
       
       # create a message in chats table          
       try:
-        response = create_one_message(chat_id, body)
+        response = create_one_message(chat_id, body, from_user)
         print(response)
         return build_success_response(response)
       except Exception as e:
