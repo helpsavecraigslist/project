@@ -6,13 +6,11 @@ import CardMedia from '@mui/material/CardMedia'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useNavigate } from 'react-router-dom'
+import Chip from '@mui/material/Chip'
 
-// TODO - map clicking on tag button to search for other items with that tag
-function mapTagsToButtons(tags: []) {
+function mapTagsToChips(tags: []) {
   return tags.map((obj: string) => (
-    <Button sx={{ mx: 0.25 }} size='small' variant='contained'>
-      {obj}
-    </Button>
+    <Chip variant='outlined' color='primary' sx={{ m: 0.3 }} label={obj} />
   ))
 }
 
@@ -35,13 +33,15 @@ export default function MediaCard({ data }: any) {
         alt='green iguana'
       />
       <CardContent sx={{ mb: -2 }}>
-        <Typography gutterBottom variant='h5' component='div'>
-          {data.Title}
+        <Typography marginBottom={1} variant='h5' component='div'>
+          {data.Title}, ${data.Price}
         </Typography>
-        {mapTagsToButtons(data.Tags)}
+        {mapTagsToChips(data.Tags)}
       </CardContent>
-      <CardActions>
+      <CardActions sx={{ p: '16px' }}>
         <Button
+          size='small'
+          variant='contained'
           onClick={() =>
             navigate(generateItemUrl(data.UserID, data.PostedDate))
           }
@@ -50,6 +50,7 @@ export default function MediaCard({ data }: any) {
         </Button>
         <Button
           size='small'
+          variant='contained'
           onClick={() =>
             navigate('/newMessage', {
               state: { userID: data.UserID, subject: data.Title },
