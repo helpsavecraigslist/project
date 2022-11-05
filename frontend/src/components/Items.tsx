@@ -77,10 +77,10 @@ export default function Items() {
       <Grid container sx={{ m: 2 }} alignItems='center'>
         <Grid item xs={12} md={3}>
           <TextField
-            id='filter-by-tag'
+            id='search-by-tag'
             select
             fullWidth
-            label='Filter by Tag'
+            label='Search by Tag'
             value={tagSearchSelection}
             onChange={(e) => setTagSearchSelection(e.target.value)}
             sx={{ minWidth: 100 }}
