@@ -13,6 +13,8 @@ export default function MessageNewMessage() {
   const [content, setContent] = useState('')
   const [redirect, setRedirect] = useState(false)
 
+  const randoUser = itemData.state.userID.slice(7, 15) + '@randomizedemail.com'
+
   const fetchMessageNewMessage = async () => {
     const apiName = 'default'
     const path = 'messages'
@@ -82,7 +84,7 @@ export default function MessageNewMessage() {
                     
                     id="standard"
                     label="Recipient"
-                    defaultValue=  {itemData.state.userID} 
+                    defaultValue=  {randoUser} 
                     fullWidth
                     sx = {{my:.5}}
                     // disabled, could add but this is greyed out and looks not so great

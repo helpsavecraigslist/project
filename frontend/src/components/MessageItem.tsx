@@ -12,7 +12,18 @@ import { Card, Box } from '@mui/material';
 function bgColor(unread) {if (unread == 'True'){return '#D8CDE2';}return '#F3F0F8'};
 
 export default function MessageItem(props: any) {
-  const {userID, userAvatar, subject, recepient, postedDate, numParticipants, numReplies, dateLast, userLast, unread} = props;
+  const {
+        userID, 
+        userAvatar, 
+        subject, 
+        recepient, 
+        postedDate, 
+        numParticipants, 
+        numReplies, 
+        dateLast, 
+        userLast, 
+        unread
+        } = props;
   return (
     
     <Card
@@ -24,7 +35,7 @@ export default function MessageItem(props: any) {
         alignItems:'row',
         maxWidth: '100%',
         flexGrow: 1,
-        backgroundColor: bgColor(unread) // need function here to change color for read and unread
+        backgroundColor: bgColor(unread)
       }}
     >  
       <Box sx={{
