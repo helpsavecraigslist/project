@@ -63,12 +63,14 @@ export default function TemporaryDrawer(props: MenuDrawerProps) {
                   <ListItemText primary='Items' />
                 </ListItemButton>
               </ListItem>
-              <ListItem key='Messages' disablePadding>
-                <ListItemButton component={Link} to='/messages'>
-                  <ForumRoundedIcon sx={{ m: 1 }}></ForumRoundedIcon>
-                  <ListItemText primary='Messages' />
-                </ListItemButton>
-              </ListItem>
+              {props.user && (
+                <ListItem key='Messages' disablePadding>
+                  <ListItemButton component={Link} to='/messages'>
+                    <ForumRoundedIcon sx={{ m: 1 }}></ForumRoundedIcon>
+                    <ListItemText primary='Messages' />
+                  </ListItemButton>
+                </ListItem>
+              )}
               {props.user && (
                 <ListItem key='PostItem' disablePadding>
                   <ListItemButton component={Link} to='/itemform'>
