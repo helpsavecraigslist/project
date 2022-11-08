@@ -24,7 +24,7 @@ export default function ItemForm() {
   const [title, setTitle] = useState('')
   const [price, setPrice] = useState('')
   const [allTagOptions, setAllTagOptions] = useState([])
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [selectedTags, setSelectedTags] = useState<any[]>([])
   const [description, setDescription] = useState('')
   const [location, setLocation] = useState('')
   const [image, setImage] = useState<null | File>(null)
@@ -142,6 +142,29 @@ export default function ItemForm() {
     }),
   }
 
+  const generateTagsFromTitle = () => {
+    const wordsInTitle = title.split(' ')
+    const matchedTags = []
+    for (const word of wordsInTitle) {
+      for (const option of allTagOptions) {
+        if (
+          selectedTags.find((tag) => {
+            return tag.value === option
+          })
+        ) {
+          continue
+        }
+        const wordsInOption = option.split(' ')
+        wordsInOption.push(...option.split('+'))
+        if (wordsInOption.includes(word.toLowerCase())) {
+          const convertedOption = generateTagFormOptions([option])
+          matchedTags.push(...convertedOption)
+        }
+      }
+    }
+    setSelectedTags([...selectedTags, ...matchedTags])
+  }
+
   useEffect(() => {
     setLocationOptions()
     setTagOptions()
@@ -186,6 +209,7 @@ export default function ItemForm() {
             classNamePrefix='select'
             menuPortalTarget={document.querySelector('body')}
             styles={styles}
+            value={selectedTags}
             theme={(theme) => ({
               ...theme,
               borderRadius: 3,
@@ -197,42 +221,44 @@ export default function ItemForm() {
               },
             })}
           />
-          {/* TODO - add functionality for auto-generating tags from title */}
-          <Button variant='contained' color='secondary' sx={{ flexGrow: 0.25 }}>
+          <Button
+            variant='contained'
+            color='secondary'
+            sx={{ flexGrow: 0.25 }}
+            onClick={() => generateTagsFromTitle()}
+          >
             Generate Tags For Me
           </Button>
-          <div>
-            <TextField
+          <TextField
+            required
+            type='number'
+            id='item-price'
+            label='Price'
+            value={price}
+            variant='outlined'
+            sx={{ flexGrow: 1 }}
+            InputProps={{ inputProps: { min: 0, step: '0.01' } }}
+            onChange={(e) => setPrice(e.target.value)}
+          />
+          <FormControl sx={{ flexGrow: 1 }}>
+            <InputLabel id='item-location-label'>Location</InputLabel>
+            <Select
               required
-              type='number'
-              id='item-price'
-              label='Price'
-              value={price}
-              variant='outlined'
-              sx={{ flexGrow: 1 }}
-              InputProps={{ inputProps: { min: 0, step: '0.01' } }}
-              onChange={(e) => setPrice(e.target.value)}
-            />
-            <FormControl sx={{ flexGrow: 1 }}>
-              <InputLabel id='item-location-label'>Location</InputLabel>
-              <Select
-                required
-                labelId='item-location'
-                id='item-location'
-                value={location}
-                label='Location'
-                onChange={(e) => setLocation(e.target.value)}
-              >
-                {locations.map((loc) => {
-                  return (
-                    <MenuItem key={loc} value={loc}>
-                      {loc}
-                    </MenuItem>
-                  )
-                })}
-              </Select>
-            </FormControl>
-          </div>
+              labelId='item-location'
+              id='item-location'
+              value={location}
+              label='Location'
+              onChange={(e) => setLocation(e.target.value)}
+            >
+              {locations.map((loc) => {
+                return (
+                  <MenuItem key={loc} value={loc}>
+                    {loc}
+                  </MenuItem>
+                )
+              })}
+            </Select>
+          </FormControl>
           <TextField
             id='item-description'
             label='Description'
