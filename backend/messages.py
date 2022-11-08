@@ -1,5 +1,7 @@
+from email import message
 import json
 import boto3
+from boto3.dynamodb.conditions import Key
 import os
 from datetime import datetime
 
@@ -112,8 +114,18 @@ def lambda_handler(event, context):
         if 'Items' in response:
           print(response)
           return build_success_response(response)
-    
-    
+
+      # Gets all the user's unread messages. Returns all message data for processing on frontend
+      # TODO: test, unable to test without message funtionality 
+      elif event['path'] == '/messages/unread':
+        user = event['requestContext']['authorizer']['claims']['cognito:username']
+        response = chats_table.query(
+          KeyConditionExpression = Key('ToUser').eq(user) & Key('Unread').eq(True)
+        )
+        if 'Items' in response:
+          print(response)
+          return build_success_response(response)
+          
     # PATCH
 
     # DELETE
