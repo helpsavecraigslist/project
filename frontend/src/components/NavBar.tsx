@@ -14,6 +14,11 @@ interface NavBarProps {
   user: null | CognitoIdToken
 }
 
+{/* 
+  Future async GetUnread() will update badgeContent prop below with number of unread messages for user 
+*/}
+function GetUnread(){return '45'};
+
 // Adapted from source code in Material UI Component Documentation
 // https://mui.com/material-ui/react-app-bar/
 export default function NavBar(props: NavBarProps) {
@@ -25,11 +30,8 @@ export default function NavBar(props: NavBarProps) {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             help save craigslist
           </Typography>
-          {/* 
-            async function will update badgeContent prop below with number of unread messages for user 
-          */}
           {props.user && (
-            <Badge badgeContent={4} color="primary" showZero component={Link} to='/messages'> 
+            <Badge badgeContent={GetUnread()} color="primary" showZero component={Link} to='/messages'> 
               <MailIcon color="secondary" />
             </Badge>
           )}
