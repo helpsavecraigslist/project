@@ -34,6 +34,11 @@ export default function SingleItem(props: SingleItemProps) {
 
   const formattedItemDate = new Date(itemDate)
 
+  const generateItemUrl = (userID: string, postDate: string) => {
+    const directURL = '/items/edit?user=' + userID + '&post_date=' + postDate
+    return directURL
+  }
+
   const fetchItem = async () => {
     const apiName = 'default'
     const path = 'items/item'
@@ -56,6 +61,11 @@ export default function SingleItem(props: SingleItemProps) {
     } catch {
       console.error('Error fetching items')
     }
+  }
+
+  const handleEditItem = () => {
+    const editItemUrl = generateItemUrl(itemUser, itemDate)
+    navigate(editItemUrl)
   }
 
   const handleDelete = async () => {
@@ -177,13 +187,22 @@ export default function SingleItem(props: SingleItemProps) {
           <Divider variant='middle' sx={{ my: '1rem' }}></Divider>
           <Typography variant='body1'>{itemDesc}</Typography>
           {props.user?.payload['cognito:username'] == user && (
-            <Button
-              variant='outlined'
-              startIcon={<DeleteIcon />}
-              onClick={() => handleDelete()}
-            >
-              Delete
-            </Button>
+            <>
+              <Button
+                variant='outlined'
+                startIcon={<DeleteIcon />}
+                onClick={() => handleDelete()}
+              >
+                Delete
+              </Button>
+              <Button
+                variant='outlined'
+                onClick={() => handleEditItem()}
+                sx={{ ml: 3 }}
+              >
+                Edit
+              </Button>
+            </>
           )}
         </Grid>
 

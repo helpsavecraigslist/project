@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useState } from 'react'
-import { Button, Typography } from '@mui/material'
+import { Button, CircularProgress, Grid, Typography } from '@mui/material'
 import { Auth, API } from 'aws-amplify'
 import TextField from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
@@ -10,26 +10,34 @@ import MultiSelect from 'react-select'
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 function generateItemUrl(userID: string, postDate: string) {
   const directURL = '/items/item?user=' + userID + '&post_date=' + postDate
   return directURL
 }
 
-export default function ItemForm() {
+export default function EditItemForm() {
   // State tracker for each field
   // postedBy and postedTime will be set automatically on backend
   const navigate = useNavigate()
   const [title, setTitle] = useState('')
   const [price, setPrice] = useState('')
   const [allTagOptions, setAllTagOptions] = useState([])
-  const [selectedTags, setSelectedTags] = useState<any[]>([])
+  const [selectedTags, setSelectedTags] = useState([])
   const [description, setDescription] = useState('')
   const [location, setLocation] = useState('')
   const [image, setImage] = useState<null | File>(null)
   const [locations, setLocations] = useState([])
   const [redirect, setRedirect] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [originalImage, setOriginalImage] = useState(null)
+  const [postedDate, setPostedDate] = useState(null)
+  const [originalImagePath, setOriginalImagePath] = useState(null)
+
+  const [params, setParams] = useSearchParams()
+  const user = params.get('user')
+  const post_date = params.get('post_date')
 
   // source: https://aws.plainenglish.io/how-to-create-an-image-uploader-using-aws-cdk-c163277b26f0
   const toBase64 = (file: File) =>
@@ -40,9 +48,14 @@ export default function ItemForm() {
       reader.onerror = (error) => reject(error)
     })
 
-  const postItem = async () => {
+  const putItem = async () => {
     let tags = mapTagsForSubmit(selectedTags)
-    const base64Image = await toBase64(image)
+    let base64Image
+    try {
+      base64Image = await toBase64(image)
+    } catch {
+      base64Image = null
+    }
     const apiName = 'default'
     const path = 'items'
     const myInit = {
@@ -57,16 +70,18 @@ export default function ItemForm() {
         tags,
         description,
         location,
+        postedDate,
+        originalImagePath,
         imageFile: base64Image,
-        imageName: image.name,
+        imageName: image && image.name,
       },
     }
 
     // TODO - add better error handling for unsuccessful post
     try {
-      return await API.post(apiName, path, myInit)
+      return await API.put(apiName, path, myInit)
     } catch {
-      console.error('Error posting item')
+      console.error('Error updating item')
     }
   }
 
@@ -106,6 +121,29 @@ export default function ItemForm() {
     return tagsStringified
   }
 
+  const generateTagsFromTitle = () => {
+    const wordsInTitle = title.split(' ')
+    const matchedTags = []
+    for (const word of wordsInTitle) {
+      for (const option of allTagOptions) {
+        if (
+          selectedTags.find((tag) => {
+            return tag.value === option
+          })
+        ) {
+          continue
+        }
+        const wordsInOption = option.split(' ')
+        wordsInOption.push(...option.split('+'))
+        if (wordsInOption.includes(word.toLowerCase())) {
+          const convertedOption = generateTagFormOptions([option])
+          matchedTags.push(...convertedOption)
+        }
+      }
+    }
+    setSelectedTags([...selectedTags, ...matchedTags])
+  }
+
   const handleImageInput = (e) => {
     // handle validations
     const file = e.target.files[0]
@@ -116,7 +154,7 @@ export default function ItemForm() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
-    const response = await postItem()
+    const response = await putItem()
     if (redirect) {
       const itemUrl = generateItemUrl(
         response.Item['UserID'],
@@ -142,33 +180,42 @@ export default function ItemForm() {
     }),
   }
 
-  const generateTagsFromTitle = () => {
-    const wordsInTitle = title.split(' ')
-    const matchedTags = []
-    for (const word of wordsInTitle) {
-      for (const option of allTagOptions) {
-        if (
-          selectedTags.find((tag) => {
-            return tag.value === option
-          })
-        ) {
-          continue
-        }
-        const wordsInOption = option.split(' ')
-        wordsInOption.push(...option.split('+'))
-        if (wordsInOption.includes(word.toLowerCase())) {
-          const convertedOption = generateTagFormOptions([option])
-          matchedTags.push(...convertedOption)
-        }
-      }
+  const setOriginalPost = async () => {
+    const apiName = 'default'
+    const path = 'items/item'
+    const myInit = {
+      queryStringParameters: {
+        user: user,
+        post_date: post_date,
+      },
     }
-    setSelectedTags([...selectedTags, ...matchedTags])
+    const originalPost = await API.get(apiName, path, myInit)
+    const item = originalPost['Item']
+    setTitle(item['Title'])
+    const tags = generateTagFormOptions(item['Tags'])
+    setSelectedTags(tags)
+    setLocation(item['Location'])
+    setPostedDate(item['PostedDate'])
+    setOriginalImagePath(item['ImagePath'])
+    setPrice(item['Price'])
+    setDescription(item['Description'])
+    setOriginalImage(item['ImageUrl'])
+    setLoading(false)
   }
 
   useEffect(() => {
-    setLocationOptions()
     setTagOptions()
+    setLocationOptions()
+    setOriginalPost()
   }, [])
+
+  if (loading) {
+    return (
+      <Grid item>
+        <CircularProgress />
+      </Grid>
+    )
+  }
 
   return (
     <>
@@ -178,7 +225,7 @@ export default function ItemForm() {
             '& > :not(style)': { display: 'flex', maxWidth: '80%', m: 3 },
           }}
         >
-          <Typography variant='h3'>Post Item for Sale</Typography>
+          <Typography variant='h3'>Edit Item</Typography>
           <FormControlLabel
             control={
               <Checkbox
@@ -194,12 +241,14 @@ export default function ItemForm() {
             label='Title'
             variant='outlined'
             sx={{ flexGrow: 1 }}
+            value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
           <MultiSelect
             defaultValue='general'
             placeholder='Select 1 or more tags/categories'
             isMulti
+            value={selectedTags}
             onChange={(e) => {
               setSelectedTags([...e])
             }}
@@ -209,7 +258,6 @@ export default function ItemForm() {
             classNamePrefix='select'
             menuPortalTarget={document.querySelector('body')}
             styles={styles}
-            value={selectedTags}
             theme={(theme) => ({
               ...theme,
               borderRadius: 3,
@@ -267,9 +315,20 @@ export default function ItemForm() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          {/* TODO - this doesn't do anything currently except open file finder */}
+          <Typography>Original Image</Typography>
+          <Box
+            component='img'
+            sx={{
+              height: 233,
+              width: 350,
+              maxHeight: { xs: 233, md: 167 },
+              maxWidth: { xs: 350, md: 250 },
+            }}
+            alt='Original Image'
+            src={originalImage}
+          />
           <Button variant='contained' color='secondary' component='label'>
-            Upload Image
+            Update Image
             <input
               onChange={(e) => handleImageInput(e)}
               id='item-image'
@@ -277,7 +336,7 @@ export default function ItemForm() {
               hidden
             />
           </Button>
-          {image && image.name}
+          {image && `New image: ${image.name}`}
           <Button variant='contained' type='submit' fullWidth sx={{ p: 3 }}>
             Submit
           </Button>

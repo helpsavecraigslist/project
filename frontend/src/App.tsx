@@ -20,7 +20,8 @@ import SingleItem from './components/SingleItem'
 import MessageNewMessage from './components/MessageNewMessage'
 import '@fontsource/inika' // https://fontsource.org/fonts/inika
 import '@fontsource/roboto'
-import {appTheme} from './themes/theme'
+import { appTheme } from './themes/theme'
+import EditItemForm from './components/EditItemForm'
 
 // User authorization config
 Amplify.configure({
@@ -84,6 +85,7 @@ const App = () => {
               />
               <Route path='/items' element={<Items />} />
               <Route path='/items/item' element={<SingleItem user={user} />} />
+              <Route path='items/edit' element={<EditItemForm />} />
               <Route path='/itemform' element={<ItemForm />} />
               <Route path='/messages' element={<MessageList />} />
               <Route path='/messageDetail' element={<MessageDetail />} />
