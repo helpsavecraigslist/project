@@ -133,6 +133,67 @@ def lambda_handler(event, context):
       )
       return responseItem
 
+    def put_item(userName, eventBody):
+      numPrice = Decimal(eventBody['price'])
+      roundedPrice = round(numPrice, 2)
+
+      full_path = eventBody['originalImagePath'] # This is updated if the image changes
+
+      if eventBody['imageFile']:
+        file_base_64 = ''
+        if eventBody['imageFile'].startswith('data:image/jpeg;base64,'):
+          file_base_64 = base64.b64decode(eventBody['imageFile'][23: ])
+        else:
+          file_base_64 = base64.b64decode(eventBody['imageFile'])
+        unique_id = str(datetime.now())
+        full_path = '{}/{}'.format(unique_id, eventBody['imageName'])
+        imagesBucket.delete_objects(
+        Delete={
+          'Objects': [
+            {
+              'Key': eventBody['originalImagePath']
+            }
+          ]
+        }
+      )
+        imagesBucket.put_object(
+            Key=full_path,
+            Body=file_base_64,
+            ContentType='image/jpg'
+        )
+
+      if roundedPrice < 0:
+        raise Exception("Number cannot be negative")
+      if eventBody['location'] not in avaliable_locations:
+        raise Exception("Invalid Location")
+      if not eventBody['description']:
+        raise Exception("Description not provided")
+      if not eventBody['tags']:
+        raise Exception("Tags not provided")
+      if not eventBody['title']:
+        raise Exception("Title not provided")
+      item = {
+          'UserID': userName,
+          'PostedDate': eventBody['postedDate'],
+          'Location': eventBody['location'],
+          'Price': roundedPrice,
+          'Tags': eventBody['tags'].split(','),
+          'Title': eventBody['title'],
+          'ImagePath': full_path,
+          'ImageUrl': 'https://{}/{}'.format(imagesDistributionDomainName, full_path),
+          'Description': eventBody['description']
+        }
+      table.put_item(
+        Item=item
+      )
+      responseItem = table.get_item(
+        Key={
+          'UserID': item['UserID'],
+          'PostedDate': item['PostedDate']
+        }
+      )
+      return responseItem
+
     if event['path'] == '/items/locations':
       return build_success_response(avaliable_locations)
 
@@ -159,6 +220,16 @@ def lambda_handler(event, context):
       userName = event['requestContext']['authorizer']['claims']['cognito:username']
       try:
         response = post_item(userName, body)
+        return build_success_response(response)
+      except Exception as e:
+        print('error', e)
+        return build_failure_response(str(e))
+
+    if event['httpMethod'] == 'PUT':
+      body = json.loads(event['body'])
+      userName = event['requestContext']['authorizer']['claims']['cognito:username']
+      try:
+        response = put_item(userName, body)
         return build_success_response(response)
       except Exception as e:
         print('error', e)

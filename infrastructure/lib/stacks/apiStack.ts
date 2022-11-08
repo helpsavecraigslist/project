@@ -217,13 +217,17 @@ export class APIStack extends Stack {
       // },
     })
 
-    items.addMethod('GET') 
+    items.addMethod('GET')
 
     items.addMethod('POST', undefined, {
       authorizer,
     })
 
     items.addMethod('DELETE', undefined, {
+      authorizer,
+    })
+
+    items.addMethod('PUT', undefined, {
       authorizer,
     })
 
@@ -239,8 +243,7 @@ export class APIStack extends Stack {
       anyMethod: true,
       // defaultMethodOptions: {authorizer},
     })
-    messages_proxy.addMethod('POST', undefined, {authorizer})
-    messages_proxy.addMethod('GET', undefined, {authorizer})
-
+    messages_proxy.addMethod('POST', undefined, { authorizer })
+    messages_proxy.addMethod('GET', undefined, { authorizer })
   }
 }
