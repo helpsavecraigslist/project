@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { CircularProgress, Grid, TextField, Typography } from '@mui/material'
-import ItemCard from './ItemCard'
+import { CircularProgress, Grid, TextField } from '@mui/material'
 import { API } from 'aws-amplify'
 import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem'
-import Alert from '@mui/material/Alert'
+import generateCards from './GenerateCards'
 
 export default function Items() {
   const [dbResponse, setDbResponse] = useState<any[]>([])
@@ -13,6 +12,8 @@ export default function Items() {
   const [tagSearchSelection, setTagSearchSelection] = useState('')
   const [priceSortSelection, setPriceSortSelection] = useState('')
   const [dateSortSelection, setDateSortSelection] = useState('')
+  const [priceMinSelection, setPriceMinSelection] = useState('')
+  const [priceMaxSelection, setPriceMaxSelection] = useState('')
 
   const fetchItems = async () => {
     const apiName = 'default'
@@ -44,83 +45,10 @@ export default function Items() {
     setTagOptions()
   }, [])
 
-  function generateCards(dbResponse: any) {
-    // Handles re-set (clear all selections button) as well as initial/default page load
-    if (!tagSearchSelection && !priceSortSelection && !dateSortSelection) {
-      return dbResponse.map((obj: any) => (
-        <Grid item>
-          <ItemCard data={obj}></ItemCard>
-        </Grid>
-      ))
-    }
-    // Filtering and sorting logic
-    else {
-      // Deep copy to preserve original db obj
-      let displayItems = JSON.parse(
-        JSON.stringify(dbResponse)
-      ) as typeof dbResponse
-      if (tagSearchSelection) {
-        displayItems = dbResponse.filter((item) => {
-          return item.Tags.includes(tagSearchSelection)
-        })
-        if (displayItems.length === 0) {
-          return (
-            <>
-              <Typography variant='h4' sx={{ my: 8 }}>
-                No items with this tag.
-              </Typography>
-            </>
-          )
-        }
-      }
-      // Cannot sort by price and date at the same time
-      if (priceSortSelection) {
-        if (!dateSortSelection) {
-          if (priceSortSelection === 'Low to High') {
-            displayItems.sort((a, b) => a.Price - b.Price)
-          } else {
-            displayItems.sort((a, b) => b.Price - a.Price)
-          }
-        } else {
-          return (
-            <Alert severity='error' sx={{ m: 4, p: 3 }}>
-              Cannot sort by both price and date at the same time. Please clear
-              one of these selections and re-try.
-            </Alert>
-          )
-        }
-      }
-      // Newer (closer to present) date is considered "greater than"
-      // Default sort is oldest items first
-      // Cannot sort by price and date at the same time
-      if (dateSortSelection) {
-        if (!priceSortSelection) {
-          if (dateSortSelection === 'Oldest First') {
-            displayItems.sort((a, b) => (a.PostedDate < b.PostedDate ? -1 : 1))
-          } else {
-            displayItems.sort((a, b) => (a.PostedDate > b.PostedDate ? -1 : 1))
-          }
-        } else {
-          return (
-            <Alert severity='error' sx={{ m: 4, p: 3 }}>
-              Cannot sort by both price and date at the same time. Please clear
-              one of these selections and re-try.
-            </Alert>
-          )
-        }
-      }
-      return displayItems.map((obj: any) => (
-        <Grid item>
-          <ItemCard data={obj}></ItemCard>
-        </Grid>
-      ))
-    }
-  }
-
   return (
     <>
       <Grid container sx={{ m: 2 }} alignItems='center'>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} md={4}>
           <TextField
             id='search-by-tag'
             select
@@ -128,7 +56,7 @@ export default function Items() {
             label='Search by Tag'
             value={tagSearchSelection}
             onChange={(e) => setTagSearchSelection(e.target.value)}
-            sx={{ minWidth: 100 }}
+            sx={{ minWidth: 100, mb: 1 }}
             size='small'
           >
             {allTagOptions.map((t) => {
@@ -140,7 +68,7 @@ export default function Items() {
             })}
           </TextField>
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} md={4}>
           <TextField
             id='sort-by-price'
             select
@@ -148,7 +76,7 @@ export default function Items() {
             label='Sort by Price'
             value={priceSortSelection}
             onChange={(e) => setPriceSortSelection(e.target.value)}
-            sx={{ minWidth: 100 }}
+            sx={{ minWidth: 100, mb: 1 }}
             size='small'
           >
             {['Low to High', 'High to Low', 'None'].map((p) => {
@@ -162,7 +90,7 @@ export default function Items() {
             })}
           </TextField>
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} md={4}>
           <TextField
             id='sort-by-date'
             select
@@ -170,7 +98,7 @@ export default function Items() {
             label='Sort by Date'
             value={dateSortSelection}
             onChange={(e) => setDateSortSelection(e.target.value)}
-            sx={{ minWidth: 100 }}
+            sx={{ minWidth: 100, mb: 1 }}
             size='small'
           >
             {['Newest First', 'Oldest First', 'None'].map((d) => {
@@ -185,6 +113,32 @@ export default function Items() {
           </TextField>
         </Grid>
         <Grid item xs={12} md={3}>
+          <TextField
+            type='number'
+            id='min-price'
+            label='Min. Price'
+            value={priceMinSelection}
+            variant='outlined'
+            fullWidth
+            size='small'
+            InputProps={{ inputProps: { min: 0, step: '0.01' } }}
+            onChange={(e) => setPriceMinSelection(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <TextField
+            type='number'
+            id='max-price'
+            label='Max Price'
+            value={priceMaxSelection}
+            variant='outlined'
+            fullWidth
+            size='small'
+            InputProps={{ inputProps: { min: 0, step: '0.01' } }}
+            onChange={(e) => setPriceMaxSelection(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} md={3}>
           <Button
             variant='contained'
             color='secondary'
@@ -194,6 +148,8 @@ export default function Items() {
               setTagSearchSelection('')
               setPriceSortSelection('')
               setDateSortSelection('')
+              setPriceMinSelection('')
+              setPriceMaxSelection('')
             }}
           >
             Clear Selections
@@ -206,7 +162,14 @@ export default function Items() {
             <CircularProgress />
           </Grid>
         )}
-        {generateCards(dbResponse)}
+        {generateCards(
+          dbResponse,
+          tagSearchSelection,
+          priceSortSelection,
+          dateSortSelection,
+          priceMinSelection,
+          priceMaxSelection
+        )}
       </Grid>
     </>
   )
