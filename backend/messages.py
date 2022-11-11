@@ -1,7 +1,5 @@
-from email import message
 import json
 import boto3
-from boto3.dynamodb.conditions import Key
 import os
 from datetime import datetime
 
@@ -45,7 +43,7 @@ def lambda_handler(event, context):
           'ChatID': chat_id,
           'PostedDate': str(datetime.now()),
           'FromUser': from_user,
-          'ToUser': eventBody['to_user'],
+          # 'ToUser': eventBody['to_user'],
           'Subject':  eventBody['subject'],
           'Content': eventBody['content'],
           'Unread': True
@@ -60,25 +58,31 @@ def lambda_handler(event, context):
       return userid2 + '-' + userid1
     
     
-    # print(json.dumps(event))
+    print(json.dumps(event))
     
     # POST
     if event['httpMethod'] == 'POST':
       body = json.loads(event['body'])
       from_user = event['requestContext']['authorizer']['claims']['cognito:username']
-      to_user = body['to_user']
-      chat_id = generate_chatid(from_user, to_user)
+
 
       # Start a chat, add 2 documents of userID: ChatID to users table
       if event['path'] == '/messages/newchat':
+        to_user = body['to_user']
+        chat_id = generate_chatid(from_user, to_user)
+        if to_user == from_user:
+          return build_failure_response('Cannot start a new chat with the same ID.')
         try:
           with users_table.batch_writer() as batch:
-            batch.put_item(Item={'UserID': from_user, 'ChatID':chat_id})
-            batch.put_item(Item={'UserID': to_user, 'ChatID':chat_id})
+            batch.put_item(Item={'UserID': from_user, 'ChatID':chat_id, 'OtherUserID': to_user})
+            batch.put_item(Item={'UserID': to_user, 'ChatID':chat_id, 'OtherUserID': from_user})
         except Exception as e:
           print('error', e)
           return build_failure_response(str(e))
       
+      else:
+        chat_id = body['chat_id']
+        
       # create a message in chats table          
       try:
         response = create_one_message(chat_id, body, from_user)
@@ -89,12 +93,11 @@ def lambda_handler(event, context):
         return build_failure_response(str(e))
         
     
-    # READ
+    # # READ
     if event['httpMethod'] == 'GET':
       
       # Get all chats that one user participated
       if event['path'] == '/messages/chats':
-        # user = event['queryStringParameters']['user']
         user = event['requestContext']['authorizer']['claims']['cognito:username']
         response = users_table.query(
           ExpressionAttributeValues = {':partitionkey': user},
@@ -106,7 +109,7 @@ def lambda_handler(event, context):
     
       # Get all messages in one particular chat. Query results are sorted by the sort key.
       elif event['path'] == '/messages/chat':
-        chat_id = event['queryStringParameters']['chatid']
+        chat_id = event['queryStringParameters']['ChatID']
         response = chats_table.query(
           ExpressionAttributeValues = {':partitionkey': chat_id},
           KeyConditionExpression = 'ChatID = :partitionkey'
@@ -114,18 +117,9 @@ def lambda_handler(event, context):
         if 'Items' in response:
           print(response)
           return build_success_response(response)
-
-      # Gets all the user's unread messages. Returns all message data for processing on frontend
-      # TODO: test, unable to test without message funtionality 
-      elif event['path'] == '/messages/unread':
-        user = event['requestContext']['authorizer']['claims']['cognito:username']
-        response = chats_table.query(
-          KeyConditionExpression = Key('ToUser').eq(user) & Key('Unread').eq(True)
-        )
-        if 'Items' in response:
-          print(response)
-          return build_success_response(response)
-          
+    
+    
+    
     # PATCH
 
     # DELETE

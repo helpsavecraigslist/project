@@ -1,16 +1,13 @@
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { Card, Box } from '@mui/material';
+import MessageSendBox from './MessageSendBox'
 
 //adapted from https://mui.com/material-ui/react-grid/
 
-{/* 
-
-*/}
-
 
 export default function MessageDetailPrevMessage(props: any) {
-  const {userID, userAvatar, message, postedDate, } = props;
+  const {chatID, userID, userAvatar, message, postedDate, subject} = props;
   return (
     
     <Card
@@ -43,22 +40,34 @@ export default function MessageDetailPrevMessage(props: any) {
           ></Avatar>
           <Typography gutterBottom variant='body1'>
             
-            {userID} 
+            {userID.slice(-6)} 
             
           </Typography>
         </Box>
-        <Box sx={{bgcolor:'#F3F0F7', width: '90%', p:1}} >
-         
-              <Typography gutterBottom variant="subtitle2" component="div">
-                {postedDate}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                {message}
-              </Typography>
-         
-          
+        
+        <Box sx={{bgcolor:'#F3F0F7', width: '40%', p:1}} >
+          <Typography gutterBottom variant="subtitle2" component="div">
+            {subject}
+          </Typography>         
+          <Typography gutterBottom variant="subtitle2" component="div">
+            {postedDate}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            {message}
+          </Typography>
         </Box>
-      
+
+        <Box sx={{bgcolor:'#F3F0F7', width: '40%', p:1}}>
+
+          <MessageSendBox
+            chatID = {chatID}
+            subject = {subject}
+            buttonText = "Reply"
+            placeholder = "Write your reply here"
+          ></MessageSendBox>
+
+        </Box>
+
     </Card>
     
   );

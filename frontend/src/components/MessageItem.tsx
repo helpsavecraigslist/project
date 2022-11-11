@@ -13,6 +13,7 @@ function bgColor(unread) {if (unread == 'True'){return '#D8CDE2';}return '#F3F0F
 
 export default function MessageItem(props: any) {
   const {
+        chatID,
         userID, 
         userAvatar, 
         subject, 
@@ -65,30 +66,34 @@ export default function MessageItem(props: any) {
           justifyContent: 'space-evenly'  
           }}
           >
+
           <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <Typography gutterBottom variant="body1" component="div">
-                <Link to='/messageDetail'> {subject} </Link>
+                <Link to='/messageDetail' state={{chatid:chatID}}> View all messages </Link>
               </Typography>
-              <Typography variant="body2" gutterBottom>
+              {/* <Typography variant="body2" gutterBottom>
                 {userID}, {recepient} - {postedDate}
-              </Typography> 
+              </Typography>  */}
           </Box>
-          <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+
+          {/* <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <Typography gutterBottom variant="body2" component="div">
                 Replies:  {numReplies}
               </Typography>
               <Typography variant="body2" gutterBottom>
                 Participants:  {numParticipants}
               </Typography>
-          </Box>
-          <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+          </Box> */}
+
+          {/* <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <Typography gutterBottom variant="body2" component="div">
                 {dateLast}
               </Typography>
               <Typography variant="body2" gutterBottom>
                 {userLast}
               </Typography>
-          </Box>
+          </Box> */}
+
         </Box>
     </Card>
   );
