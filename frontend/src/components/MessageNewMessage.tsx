@@ -11,26 +11,25 @@ export default function MessageNewMessage() {
   const navigate = useNavigate()
   const itemData = useLocation()
   const [content, setContent] = useState('')
-  const [redirect, setRedirect] = useState(false)
 
-  const randoUser = itemData.state.userID.slice(7, 15) + '@randomizedemail.com'
+  // const randoUser = itemData.state.userID.slice(7, 15) + '@randomizedemail.com'
 
-  const fetchMessageNewMessage = async () => {
-    const apiName = 'default'
-    const path = 'messages'
-    const myInit = {}
-    try {
-      const response = await API.get(apiName, path, myInit)
-      console.log(response)
-    } catch {
-      console.error('Error fetching message detail')
-    }
-  }
+  // const fetchMessageNewMessage = async () => {
+  //   const apiName = 'default'
+  //   const path = 'messages'
+  //   const myInit = {}
+  //   try {
+  //     const response = await API.get(apiName, path, myInit)
+  //     console.log(response)
+  //   } catch {
+  //     console.error('Error fetching message detail')
+  //   }
+  // }
  
-  useEffect(() => {
-    fetchMessageNewMessage()
+  // useEffect(() => {
+  //   fetchMessageNewMessage()
     
-  }, [])
+  // }, [])
 
   const postNewChat = async () => {
     const apiName = 'default'
@@ -42,7 +41,7 @@ export default function MessageNewMessage() {
           .getJwtToken()}`,
       },
       body: {
-        to_user: itemData.state.userID,
+        to_user:itemData.state.userID,
         subject:itemData.state.subject,
         content,
       },
@@ -58,15 +57,8 @@ export default function MessageNewMessage() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
-    const response = await postNewChat()
-    // TODO
-    // if (redirect) {
-      // const itemUrl = generateItemUrl(
-      //   response.Item['UserID'],
-      //   response.Item['PostedDate']
-      // )
-      // navigate(itemUrl)
-    // }
+    await postNewChat()
+    navigate('/messages')
   }
 
   return (
@@ -84,7 +76,8 @@ export default function MessageNewMessage() {
                     
                     id="standard"
                     label="Recipient"
-                    defaultValue=  {randoUser} 
+                    defaultValue=  {itemData.state.userID.slice(-6)} 
+                    // defaultValue=  {randoUser} 
                     fullWidth
                     sx = {{my:.5}}
                     // disabled, could add but this is greyed out and looks not so great

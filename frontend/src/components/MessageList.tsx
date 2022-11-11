@@ -1,8 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import MessageItem from './MessageItem'
 import Box from '@mui/material/Box'
-import { API } from 'aws-amplify'
-import { useNavigate } from 'react-router-dom'
+import { Auth, API } from 'aws-amplify'
+// import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography';
 
 const messageData = [
@@ -48,15 +48,22 @@ const messageData = [
 ]
 
 export default function MessageList() {
-  const navigate = useNavigate()
+  const [dbResponse, setDbResponse] = useState<any[]>([])
+  // const navigate = useNavigate()
 
   const fetchMessageList = async () => {
     const apiName = 'default'
-    const path = 'messages'
-    const myInit = {}
+    const path = 'messages/chats'
+    const myInit = {
+      headers: {
+        Authorization: `Bearer ${(await Auth.currentSession())
+          .getIdToken()
+          .getJwtToken()}`,
+      },      
+    }
     try {
       const response = await API.get(apiName, path, myInit)
-      console.log(response)
+      setDbResponse([...response.Items])
     } catch {
       console.error('Error fetching messages')
     }
@@ -65,6 +72,7 @@ export default function MessageList() {
   useEffect(() => {
     fetchMessageList()
   }, [])
+
   return (
     <>
        <div style={{width:"100%",display: 'block', justifyContent: 'space-evenlycenter', alignItems: 'center'}}>
@@ -77,20 +85,21 @@ export default function MessageList() {
         <Box sx={{ width: '100%' }} >
           
           {/* TODO: pull message data */}
-          {messageData.map((message,index)=>(
+          {dbResponse.map((chat, index)=>(
               
-             <MessageItem 
+             <MessageItem
               key = {index}
-              userID = {message.username}
-              userAvatar = {message.userAvatar}
-              recepient = {message.recipient}
-              subject = {message.subject}
-              postedDate = {message.postedDate}
-              numReplies = {message.numReplies}
-              numParticipants = {message.numParticipants}
-              dateLast = {message.dateLast}
-              userLast = {message.userLast}
-              unread = {message.unread}
+              chatID = {chat.ChatID}
+              userID = {chat.OtherUserID.slice(-6)}
+              userAvatar = {'string'}
+              // recepient = {obj.recipient}
+              subject = {'subjectwhat'}
+              // postedDate = {message.postedDate}
+              // numReplies = {message.numReplies}
+              // numParticipants = {message.numParticipants}
+              // dateLast = {message.dateLast}
+              // userLast = {message.userLast}
+              // unread = {message.unread}
               ></MessageItem>
               
               )
@@ -101,4 +110,42 @@ export default function MessageList() {
       </div>
     </>
   )
+
+  // return (
+  //   <>
+  //      <div style={{width:"100%",display: 'block', justifyContent: 'space-evenlycenter', alignItems: 'center'}}>
+  //       <Box sx={{width: '100%', alignItems: 'center', justifyContent: 'space-around', display: 'flex', }}>
+          
+  //         <Typography gutterBottom variant='h4'>
+  //           Messages
+  //         </Typography>
+  //       </Box>
+  //       <Box sx={{ width: '100%' }} >
+          
+  //         {/* TODO: pull message data */}
+  //         {messageData.map((message,index)=>(
+              
+  //            <MessageItem 
+  //             key = {index}
+  //             userID = {message.username}
+  //             userAvatar = {message.userAvatar}
+  //             recepient = {message.recipient}
+  //             subject = {message.subject}
+  //             postedDate = {message.postedDate}
+  //             numReplies = {message.numReplies}
+  //             numParticipants = {message.numParticipants}
+  //             dateLast = {message.dateLast}
+  //             userLast = {message.userLast}
+  //             unread = {message.unread}
+  //             ></MessageItem>
+              
+  //             )
+  //           )
+  //         }
+  //       </Box>
+      
+  //     </div>
+  //   </>
+  // )
+
 }
