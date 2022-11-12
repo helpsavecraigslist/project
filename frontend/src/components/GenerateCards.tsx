@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { Grid, Alert, Typography } from '@mui/material'
 import ItemCard from './ItemCard'
 
-export default function generateCards(
+function applyFilters(
   dbResponse: any,
   tagSearchSelection: string,
   priceSortSelection: string,
   dateSortSelection: string,
   priceMinSelection: string,
-  priceMaxSelection: string
+  priceMaxSelection: string,
+  searchString: string,
+  searchReady: boolean
 ) {
   // Handles re-set (clear all selections button) as well as initial/default page load
   if (
@@ -16,7 +18,9 @@ export default function generateCards(
     !priceSortSelection &&
     !dateSortSelection &&
     !priceMinSelection &&
-    !priceMaxSelection
+    !priceMaxSelection &&
+    !searchString &&
+    !searchReady
   ) {
     return dbResponse.map((obj: any) => (
       <Grid item>
@@ -97,10 +101,54 @@ export default function generateCards(
         )
       })
     }
+    // lastly, search the titles of these filtered-down results
+    if (searchReady) {
+      displayItems = searchTitles(searchString, displayItems)
+    }
     return displayItems.map((obj: any) => (
       <Grid item>
         <ItemCard data={obj}></ItemCard>
       </Grid>
     ))
   }
+}
+
+function searchTitles(searchString: string, dbResponse: any) {
+  let searchTerms = searchString.split(' ')
+  let searchResults = Array()
+  for (const term in searchTerms) {
+    for (const item in dbResponse) {
+      if (
+        dbResponse[item].Title.toLowerCase().includes(
+          searchTerms[term].toLowerCase()
+        )
+      )
+        if (!searchResults.includes(dbResponse[item])) {
+          searchResults.push(dbResponse[item])
+        }
+    }
+  }
+  return searchResults
+}
+
+export default function generateCards(
+  dbResponse: any,
+  tagSearchSelection: string,
+  priceSortSelection: string,
+  dateSortSelection: string,
+  priceMinSelection: string,
+  priceMaxSelection: string,
+  searchString: string,
+  searchReady: boolean
+) {
+  return applyFilters(
+    dbResponse,
+    tagSearchSelection,
+    priceSortSelection,
+    dateSortSelection,
+    priceMinSelection,
+    priceMaxSelection,
+    searchString,
+    searchReady
+  )
 }

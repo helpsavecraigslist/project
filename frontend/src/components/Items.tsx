@@ -14,6 +14,8 @@ export default function Items() {
   const [dateSortSelection, setDateSortSelection] = useState('')
   const [priceMinSelection, setPriceMinSelection] = useState('')
   const [priceMaxSelection, setPriceMaxSelection] = useState('')
+  const [searchString, setSearchString] = useState('')
+  const [searchReady, setSearchReady] = useState(false)
 
   const fetchItems = async () => {
     const apiName = 'default'
@@ -112,7 +114,7 @@ export default function Items() {
             })}
           </TextField>
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} md={2}>
           <TextField
             type='number'
             id='min-price'
@@ -123,9 +125,10 @@ export default function Items() {
             size='small'
             InputProps={{ inputProps: { min: 0, step: '0.01' } }}
             onChange={(e) => setPriceMinSelection(e.target.value)}
+            sx={{ mb: 1 }}
           />
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} md={2}>
           <TextField
             type='number'
             id='max-price'
@@ -136,23 +139,52 @@ export default function Items() {
             size='small'
             InputProps={{ inputProps: { min: 0, step: '0.01' } }}
             onChange={(e) => setPriceMaxSelection(e.target.value)}
+            sx={{ mb: 1 }}
           />
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} md={5}>
+          <TextField
+            id='search-titles'
+            label='Search Item Titles'
+            type='search'
+            fullWidth
+            size='small'
+            value={searchString}
+            onChange={(e) => setSearchString(e.target.value)}
+            sx={{ mb: 1 }}
+          />
+        </Grid>
+        <Grid item xs={12} md={1}>
           <Button
             variant='contained'
             color='secondary'
-            size='large'
-            sx={{ mx: 2, p: 1.25 }}
+            size='small'
+            sx={{ mx: 1.5, p: 1.25, mb: 1 }}
+            onClick={() => {
+              setSearchReady(true)}
+            }
+          >
+            Search
+          </Button>
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <Button
+            variant='contained'
+            color='secondary'
+            size='small'
+            fullWidth
+            sx={{ p: 1.25, mb: 1 }}
             onClick={() => {
               setTagSearchSelection('')
               setPriceSortSelection('')
               setDateSortSelection('')
               setPriceMinSelection('')
               setPriceMaxSelection('')
+              setSearchString('')
+              setSearchReady(false)
             }}
           >
-            Clear Selections
+            Reset All
           </Button>
         </Grid>
       </Grid>
@@ -168,7 +200,9 @@ export default function Items() {
           priceSortSelection,
           dateSortSelection,
           priceMinSelection,
-          priceMaxSelection
+          priceMaxSelection,
+          searchString, 
+          searchReady
         )}
       </Grid>
     </>
