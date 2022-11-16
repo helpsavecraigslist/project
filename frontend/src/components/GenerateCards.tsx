@@ -49,39 +49,62 @@ function applyFilters(
       }
     }
     // Cannot sort by price and date at the same time
+    // Cannot sort by price when searching title (sorted by relevance)
     if (priceSortSelection) {
-      if (!dateSortSelection) {
+      if (!dateSortSelection && !searchString) {
         if (priceSortSelection === 'Low to High') {
           displayItems.sort((a, b) => a.Price - b.Price)
         } else {
           displayItems.sort((a, b) => b.Price - a.Price)
         }
       } else {
-        return (
-          <Alert severity='error' sx={{ m: 4, p: 3 }}>
-            Cannot sort by both price and date at the same time. Please clear
-            one of these selections and re-try.
-          </Alert>
-        )
+        if (dateSortSelection) {
+          return (
+            <Alert severity='error' sx={{ m: 4, p: 3 }}>
+              Cannot sort by both price and date at the same time. Please clear
+              one of these selections and re-try.
+            </Alert>
+          )
+        }
+        if (searchString) {
+          return (
+            <Alert severity='error' sx={{ m: 4, p: 3 }}>
+              Cannot sort by both price and by search terms (by search
+              relevance) at the same time. Please clear one of these selections
+              and re-try.
+            </Alert>
+          )
+        }
       }
     }
     // Newer (closer to present) date is considered "greater than"
     // Default sort is oldest items first
     // Cannot sort by price and date at the same time
+    // Cannot sort by date when searching title (sorted by relevance)
     if (dateSortSelection) {
-      if (!priceSortSelection) {
+      if (!priceSortSelection && !searchString) {
         if (dateSortSelection === 'Oldest First') {
           displayItems.sort((a, b) => (a.PostedDate < b.PostedDate ? -1 : 1))
         } else {
           displayItems.sort((a, b) => (a.PostedDate > b.PostedDate ? -1 : 1))
         }
       } else {
-        return (
-          <Alert severity='error' sx={{ m: 4, p: 3 }}>
-            Cannot sort by both price and date at the same time. Please clear
-            one of these selections and re-try.
-          </Alert>
-        )
+        if (priceSortSelection) {
+          return (
+            <Alert severity='error' sx={{ m: 4, p: 3 }}>
+              Cannot sort by both price and date at the same time. Please clear
+              one of these selections and re-try.
+            </Alert>
+          )
+        }
+        if (searchString) {
+          return (
+            <Alert severity='error' sx={{ m: 4, p: 3 }}>
+              Cannot sort by both date and by search terms (by search relevance)
+              at the same time. Please clear one of these selections and re-try.
+            </Alert>
+          )
+        }
       }
     }
     // Filter out anything below min price and above max price
@@ -113,20 +136,66 @@ function applyFilters(
   }
 }
 
-function searchTitles(searchString: string, dbResponse: any) {
-  let searchTerms = searchString.split(' ')
+function searchTitles(searchString: string, itemsToSearch: any) {
+  let searchTerms = searchString.trim().split(' ')
+  // If extra spaces are included between words they get picked up
+  // as '' and added to the searchTerms array, delete these
+  searchTerms = searchTerms.filter((st) => {
+    return st.length !== 0
+  })
+
+  // Define the interface for our objects
+  type ScoredResults = {
+    item: any
+    relevanceScore: number
+  }
   let searchResults = Array()
+  let duplicateItemCheck = Array()
+  let scoredResults: { [title: string]: ScoredResults } = {}
+  let scoredResultsArr = Array()
+
   for (const term in searchTerms) {
-    for (const item in dbResponse) {
+    for (const item in itemsToSearch) {
       if (
-        dbResponse[item].Title.toLowerCase().includes(
+        itemsToSearch[item].Title.toLowerCase().includes(
           searchTerms[term].toLowerCase()
         )
-      )
-        if (!searchResults.includes(dbResponse[item])) {
-          searchResults.push(dbResponse[item])
+      ) {
+        if (!duplicateItemCheck.includes(itemsToSearch[item])) {
+          duplicateItemCheck.push(itemsToSearch[item])
+          // First time it is found, set up with rel. score of 1
+          // Include PostedDate in key so that items with the same title aren't
+          // incorrectly flagged as duplicates
+          scoredResults[
+            itemsToSearch[item].Title + '_' + itemsToSearch[item].PostedDate
+          ] = {
+            item: itemsToSearch[item],
+            relevanceScore: 1,
+          }
+        } else {
+          let newRelevanceScore =
+            scoredResults[
+              itemsToSearch[item].Title + '_' + itemsToSearch[item].PostedDate
+            ].relevanceScore + 1
+          scoredResults[
+            itemsToSearch[item].Title + '_' + itemsToSearch[item].PostedDate
+          ] = {
+            item: itemsToSearch[item],
+            relevanceScore: newRelevanceScore,
+          }
         }
+      }
     }
+  }
+  // Turn into an array so we can use .sort()
+  for (let s in scoredResults) {
+    scoredResultsArr.push(scoredResults[s])
+  }
+  // Sort by relevance (highest relevance score)
+  scoredResultsArr.sort((a, b) => b.relevanceScore - a.relevanceScore)
+  // Strip out the relevance score before returning results
+  for (let r in scoredResultsArr) {
+    searchResults.push(scoredResultsArr[r].item)
   }
   return searchResults
 }
