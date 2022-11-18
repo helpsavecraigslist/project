@@ -102,18 +102,6 @@ export class APIStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY,
     })
 
-    itemsDatabase.addGlobalSecondaryIndex({
-      indexName: 'location-date-gsi',
-      partitionKey: {
-        name: 'Location',
-        type: AttributeType.STRING,
-      },
-      sortKey: {
-        name: 'PostedDate',
-        type: AttributeType.STRING,
-      },
-    })
-
     // Static images bucket and distribution
     const imagesBucket = new Bucket(this, 'imagesBucket', {})
 

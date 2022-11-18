@@ -10,7 +10,13 @@ import Chip from '@mui/material/Chip'
 
 function mapTagsToChips(tags: []) {
   return tags.map((obj: string) => (
-    <Chip variant='outlined' color='primary' sx={{ m: 0.3 }} label={obj} />
+    <Chip
+      variant='outlined'
+      color='primary'
+      sx={{ m: 0.3 }}
+      label={obj}
+      key={obj}
+    />
   ))
 }
 
@@ -25,7 +31,7 @@ export default function MediaCard({ data }: any) {
   const navigate = useNavigate()
 
   return (
-    <Card sx={{ maxWidth: 345, m: 1 }}>
+    <Card sx={{ maxWidth: 345, m: 1 }} key={data.PostedDate}>
       <CardMedia
         component='img'
         height='140'
