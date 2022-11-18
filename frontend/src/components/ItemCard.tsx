@@ -45,7 +45,6 @@ export default function MediaCard({ data }: any) {
     getCurrentUser()
   }, [])
 
-  console.log('tag user', user)
   return (
     <Card sx={{ maxWidth: 345, m: 1 }} key={data.PostedDate}>
       <CardMedia

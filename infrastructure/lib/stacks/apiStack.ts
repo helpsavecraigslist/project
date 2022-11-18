@@ -14,6 +14,7 @@ import {
   UserPoolIdentityProviderGoogle,
 } from 'aws-cdk-lib/aws-cognito'
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb'
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam'
 import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda'
 import { Bucket } from 'aws-cdk-lib/aws-s3'
 import { Construct } from 'constructs'
@@ -168,6 +169,25 @@ export class APIStack extends Stack {
       },
     })
 
+    const profileFunction = new Function(this, 'profileFunction', {
+      code: Code.fromAsset('../backend'),
+      handler: 'profile.lambda_handler',
+      runtime: Runtime.PYTHON_3_9,
+      environment: {
+        USER_POOL_ID: pool.userPoolId,
+      },
+    })
+
+    profileFunction.addToRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ['cognito-idp:*'],
+        resources: [
+          `arn:aws:cognito-idp:${pool.stack.region}:${pool.stack.account}:userpool/${pool.userPoolId}`,
+        ],
+      })
+    )
+
     chatsDatabase.grantReadWriteData(messagesFunction)
 
     usersDatabase.grantReadWriteData(messagesFunction)
@@ -187,6 +207,14 @@ export class APIStack extends Stack {
 
     const items = api.root.addResource('items', {
       defaultIntegration: new LambdaIntegration(itemsFunction),
+      defaultCorsPreflightOptions: {
+        allowOrigins: ['*'],
+        allowCredentials: true,
+      },
+    })
+
+    const profile = api.root.addResource('profile', {
+      defaultIntegration: new LambdaIntegration(profileFunction),
       defaultCorsPreflightOptions: {
         allowOrigins: ['*'],
         allowCredentials: true,
@@ -220,6 +248,12 @@ export class APIStack extends Stack {
     })
 
     items.addProxy()
+
+    profile.addMethod('GET')
+
+    profile.addMethod('POST', undefined, {
+      authorizer,
+    })
 
     messages.addMethod('ANY')
 
