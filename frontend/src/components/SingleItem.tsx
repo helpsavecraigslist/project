@@ -123,20 +123,24 @@ export default function SingleItem(props: SingleItemProps) {
           <Typography variant='h1' gutterBottom>
             ${itemPrice}
           </Typography>
-          <IconButton
-            onClick={() =>
-              navigate('/newMessage', {
-                state: { userID: itemUser, subject: itemTitle },
-              })
-            }
-          >
-            <ForumRoundedIcon
-              sx={{ fontSize: 40, color: 'primary.main' }}
-            ></ForumRoundedIcon>
-          </IconButton>
-          <Typography variant='h5' sx={{ display: 'inline' }}>
-            Message Seller
-          </Typography>
+          {props.user?.payload['cognito:username'] !== user && (
+            <>
+              <IconButton
+                onClick={() =>
+                  navigate('/newMessage', {
+                    state: { userID: itemUser, subject: itemTitle },
+                  })
+                }
+              >
+                <ForumRoundedIcon
+                  sx={{ fontSize: 40, color: 'primary.main' }}
+                ></ForumRoundedIcon>
+              </IconButton>
+              <Typography variant='h5' sx={{ display: 'inline' }}>
+                Message Seller
+              </Typography>
+            </>
+          )}
         </Grid>
 
         {/* Item Photo */}
