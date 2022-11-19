@@ -25,7 +25,7 @@ function applyFilters(
     !searchReady
   ) {
     return dbResponse.map((obj: any) => (
-      <Grid item>
+      <Grid key={obj.PostedDate} item>
         <ItemCard data={obj}></ItemCard>
       </Grid>
     ))
@@ -160,7 +160,7 @@ function applyFilters(
       displayItems = searchTitles(searchString, displayItems)
     }
     return displayItems.map((obj: any) => (
-      <Grid item>
+      <Grid item key={obj.PostedDate}>
         <ItemCard data={obj}></ItemCard>
       </Grid>
     ))
