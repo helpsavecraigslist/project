@@ -9,7 +9,9 @@ export default function Items() {
   const [dbResponse, setDbResponse] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [allTagOptions, setAllTagOptions] = useState([])
+  const [allLocationOptions, setAllLocationOptions] = useState([])
   const [tagSearchSelection, setTagSearchSelection] = useState('')
+  const [locationSearchSelection, setLocationSearchSelection] = useState('')
   const [priceSortSelection, setPriceSortSelection] = useState('')
   const [dateSortSelection, setDateSortSelection] = useState('')
   const [priceMinSelection, setPriceMinSelection] = useState('')
@@ -42,15 +44,28 @@ export default function Items() {
     }
   }
 
+  const setLocationOptions = async () => {
+    const apiName = 'default'
+    const path = 'items/locations'
+    const myInit = {}
+    try {
+      const avaliableLocations = await API.get(apiName, path, myInit)
+      setAllLocationOptions(avaliableLocations)
+    } catch {
+      console.error('Error fetching locations: ')
+    }
+  }
+
   useEffect(() => {
     fetchItems()
     setTagOptions()
+    setLocationOptions()
   }, [])
 
   return (
     <>
       <Grid container sx={{ m: 2 }} alignItems='center'>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={3}>
           <TextField
             id='search-by-tag'
             select
@@ -70,7 +85,27 @@ export default function Items() {
             })}
           </TextField>
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={3}>
+          <TextField
+            id='search-by-tag'
+            select
+            fullWidth
+            label='Search by Location'
+            value={locationSearchSelection}
+            onChange={(e) => setLocationSearchSelection(e.target.value)}
+            sx={{ minWidth: 100, mb: 1 }}
+            size='small'
+          >
+            {allLocationOptions.map((t) => {
+              return (
+                <MenuItem key={t} value={t}>
+                  {t}
+                </MenuItem>
+              )
+            })}
+          </TextField>
+        </Grid>
+        <Grid item xs={12} md={3}>
           <TextField
             id='sort-by-price'
             select
@@ -92,7 +127,7 @@ export default function Items() {
             })}
           </TextField>
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={3}>
           <TextField
             id='sort-by-date'
             select
@@ -161,8 +196,8 @@ export default function Items() {
             size='small'
             sx={{ mx: 1.5, p: 1.25, mb: 1 }}
             onClick={() => {
-              setSearchReady(true)}
-            }
+              setSearchReady(true)
+            }}
           >
             Search
           </Button>
@@ -176,6 +211,7 @@ export default function Items() {
             sx={{ p: 1.25, mb: 1 }}
             onClick={() => {
               setTagSearchSelection('')
+              setLocationSearchSelection('')
               setPriceSortSelection('')
               setDateSortSelection('')
               setPriceMinSelection('')
@@ -199,9 +235,10 @@ export default function Items() {
           tagSearchSelection,
           priceSortSelection,
           dateSortSelection,
+          locationSearchSelection,
           priceMinSelection,
           priceMaxSelection,
-          searchString, 
+          searchString,
           searchReady
         )}
       </Grid>

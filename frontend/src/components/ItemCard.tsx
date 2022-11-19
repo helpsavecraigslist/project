@@ -7,10 +7,18 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useNavigate } from 'react-router-dom'
 import Chip from '@mui/material/Chip'
+import { Auth } from 'aws-amplify'
+import { useState, useEffect } from 'react'
 
 function mapTagsToChips(tags: []) {
   return tags.map((obj: string) => (
-    <Chip variant='outlined' color='primary' sx={{ m: 0.3 }} label={obj} />
+    <Chip
+      variant='outlined'
+      color='primary'
+      sx={{ m: 0.3 }}
+      label={obj}
+      key={obj}
+    />
   ))
 }
 
@@ -23,9 +31,22 @@ function generateItemUrl(userID: string, postDate: string) {
 // Documentation at: https://mui.com/material-ui/react-card/
 export default function MediaCard({ data }: any) {
   const navigate = useNavigate()
+  const [user, setUser] = useState(null)
+
+  const getCurrentUser = async () => {
+    try {
+      const idToken = (await Auth.currentSession()).getIdToken()
+      setUser(idToken)
+    } catch {
+      setUser(null)
+    }
+  }
+  useEffect(() => {
+    getCurrentUser()
+  }, [])
 
   return (
-    <Card sx={{ maxWidth: 345, m: 1 }}>
+    <Card sx={{ maxWidth: 345, m: 1 }} key={data.PostedDate}>
       <CardMedia
         component='img'
         height='140'
@@ -48,17 +69,19 @@ export default function MediaCard({ data }: any) {
         >
           View Details
         </Button>
-        <Button
-          size='small'
-          variant='contained'
-          onClick={() =>
-            navigate('/newMessage', {
-              state: { userID: data.UserID, subject: data.Title },
-            })
-          }
-        >
-          Message Seller
-        </Button>
+        {user && user.payload['cognito:username'] !== data.UserID && (
+          <Button
+            size='small'
+            variant='contained'
+            onClick={() =>
+              navigate('/newMessage', {
+                state: { userID: data.UserID, subject: data.Title },
+              })
+            }
+          >
+            Message Seller
+          </Button>
+        )}
       </CardActions>
     </Card>
   )

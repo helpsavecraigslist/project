@@ -9,7 +9,7 @@ import CardMedia from '@mui/material/CardMedia'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 
-import { Box, Grid } from '@mui/material'
+import { Box, Grid, TextField } from '@mui/material'
 
 interface ProfileProps {
   user: CognitoIdToken
@@ -17,6 +17,48 @@ interface ProfileProps {
 
 const Profile = (props: ProfileProps) => {
   console.log(props.user.payload)
+
+  const [newUsername, setNewUsername] = useState('')
+
+  const updateUsername = async () => {
+    if (!newUsername) {
+      alert('You must enter a username')
+      return
+    }
+    const apiName = 'default'
+    const path = 'profile'
+    const myInit = {
+      headers: {
+        Authorization: `Bearer ${(await Auth.currentSession())
+          .getIdToken()
+          .getJwtToken()}`,
+      },
+      body: {
+        username: newUsername,
+      },
+    }
+
+    try {
+      await API.post(apiName, path, myInit)
+      // Source: https://github.com/aws-amplify/amplify-js/issues/2560
+      try {
+        const cognitoUser = await Auth.currentAuthenticatedUser()
+        const currentSession = cognitoUser.signInUserSession
+        cognitoUser.refreshSession(
+          currentSession.refreshToken,
+          (err, session) => {
+            console.log('Refreshed tokens', err, session)
+            window.location.reload()
+          }
+        )
+      } catch (e) {
+        console.log('Unable to refresh Token', e)
+      }
+    } catch {
+      console.error('Error updating username')
+    }
+  }
+
   return (
     <Box display={'flex'} justifyContent={'center'}>
       <Grid>
@@ -30,12 +72,21 @@ const Profile = (props: ProfileProps) => {
           />
           <CardContent>
             <Typography gutterBottom variant='h5' component='div'>
-              {props.user.payload.given_name} {props.user.payload.family_name}
+              {props.user.payload.preferred_username || 'No username set'}
             </Typography>
           </CardContent>
           <CardActions>
-            <Button size='small'>View Posts</Button>
-            <Button size='small'>Edit Profile Picture</Button>
+            <Button size='small' onClick={() => updateUsername()}>
+              Edit Username
+            </Button>
+            <TextField
+              required
+              id='new-username'
+              label='New Username'
+              variant='outlined'
+              sx={{ flexGrow: 1 }}
+              onChange={(e) => setNewUsername(e.target.value)}
+            />
           </CardActions>
         </Card>
       </Grid>

@@ -7,6 +7,7 @@ function applyFilters(
   tagSearchSelection: string,
   priceSortSelection: string,
   dateSortSelection: string,
+  locationSearchSelection: string,
   priceMinSelection: string,
   priceMaxSelection: string,
   searchString: string,
@@ -17,6 +18,7 @@ function applyFilters(
     !tagSearchSelection &&
     !priceSortSelection &&
     !dateSortSelection &&
+    !locationSearchSelection &&
     !priceMinSelection &&
     !priceMaxSelection &&
     !searchString &&
@@ -34,7 +36,23 @@ function applyFilters(
     let displayItems = JSON.parse(
       JSON.stringify(dbResponse)
     ) as typeof dbResponse
-    if (tagSearchSelection) {
+    if (tagSearchSelection && locationSearchSelection) {
+      displayItems = dbResponse.filter((item) => {
+        return (
+          item.Tags.includes(tagSearchSelection) &&
+          item.Location === locationSearchSelection
+        )
+      })
+      if (displayItems.length === 0) {
+        return (
+          <>
+            <Typography variant='h4' sx={{ my: 8 }}>
+              No items with this tag and location.
+            </Typography>
+          </>
+        )
+      }
+    } else if (tagSearchSelection) {
       displayItems = dbResponse.filter((item) => {
         return item.Tags.includes(tagSearchSelection)
       })
@@ -43,6 +61,19 @@ function applyFilters(
           <>
             <Typography variant='h4' sx={{ my: 8 }}>
               No items with this tag.
+            </Typography>
+          </>
+        )
+      }
+    } else if (locationSearchSelection) {
+      displayItems = dbResponse.filter((item) => {
+        return item.Location === locationSearchSelection
+      })
+      if (displayItems.length === 0) {
+        return (
+          <>
+            <Typography variant='h4' sx={{ my: 8 }}>
+              No items with this location.
             </Typography>
           </>
         )
@@ -205,6 +236,7 @@ export default function generateCards(
   tagSearchSelection: string,
   priceSortSelection: string,
   dateSortSelection: string,
+  locationSearchSelection: string,
   priceMinSelection: string,
   priceMaxSelection: string,
   searchString: string,
@@ -215,6 +247,7 @@ export default function generateCards(
     tagSearchSelection,
     priceSortSelection,
     dateSortSelection,
+    locationSearchSelection,
     priceMinSelection,
     priceMaxSelection,
     searchString,
