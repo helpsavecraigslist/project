@@ -12,25 +12,6 @@ export default function MessageNewMessage() {
   const itemData = useLocation()
   const [content, setContent] = useState('')
 
-  // const randoUser = itemData.state.userID.slice(7, 15) + '@randomizedemail.com'
-
-  // const fetchMessageNewMessage = async () => {
-  //   const apiName = 'default'
-  //   const path = 'messages'
-  //   const myInit = {}
-  //   try {
-  //     const response = await API.get(apiName, path, myInit)
-  //     console.log(response)
-  //   } catch {
-  //     console.error('Error fetching message detail')
-  //   }
-  // }
- 
-  // useEffect(() => {
-  //   fetchMessageNewMessage()
-    
-  // }, [])
-
   const postNewChat = async () => {
     const apiName = 'default'
     const path = 'messages/newchat'
@@ -77,7 +58,6 @@ export default function MessageNewMessage() {
                     id="standard"
                     label="Recipient"
                     defaultValue=  {itemData.state.userID.slice(-6)} 
-                    // defaultValue=  {randoUser} 
                     fullWidth
                     sx = {{my:.5}}
                     // disabled, could add but this is greyed out and looks not so great
@@ -98,7 +78,7 @@ export default function MessageNewMessage() {
                     id="outlined-multiline-static"
                     label='Content'
                     multiline
-                    rows={4}
+                    rows={3}
                     sx = {{my:.5}}
                     placeholder = "enter your message here"
                     fullWidth

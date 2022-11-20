@@ -19,8 +19,8 @@ const Item = styled(Paper)(({ theme }) => ({
  
 */}
 
-export default function MessageDetailHeader(props: any) {
-  const {userID, subject, recepient, postedDate} = props;
+export default function MessageDetailHeader() {
+  
   return (
     
     <Paper
@@ -37,12 +37,6 @@ export default function MessageDetailHeader(props: any) {
         <Grid item xs={12} sm container>
           <Grid item xs container direction="column">
             <Grid item xs>
-              <Typography gutterBottom variant="h5" component="div">
-                {subject}
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                {userID}, {recepient}: Started on {postedDate}
-              </Typography>
               <Typography variant="body2" gutterBottom>
                 <Link to='/messages'>Back to Messages</Link> 
               </Typography>
