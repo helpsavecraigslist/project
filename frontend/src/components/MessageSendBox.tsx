@@ -1,7 +1,5 @@
 import TextField from '@mui/material/TextField';
-import { styled } from '@mui/material/styles';
 import { Box } from '@mui/material/';
-import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { Auth, API } from 'aws-amplify';
 import { useState } from 'react'
@@ -17,7 +15,7 @@ export default function MessageSendBox(props: any) {
     const path = 'messages/'
     const myInit = {
       headers: {
-        Authorization: `Bearer ${(await Auth.currentSession())
+        Authorization: `Bearer ${(await Auth.currentSession()) 
           .getIdToken()
           .getJwtToken()}`,
       },
@@ -64,7 +62,8 @@ export default function MessageSendBox(props: any) {
           <TextField
             id="outlined-multiline-static"
             multiline
-            rows={4}
+            minRows={1}
+            maxRows={4}
             placeholder = {placeholder}
             fullWidth
             value={content}

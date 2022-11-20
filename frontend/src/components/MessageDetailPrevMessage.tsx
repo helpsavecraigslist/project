@@ -38,14 +38,15 @@ export default function MessageDetailPrevMessage(props: any) {
             variant='square' 
             sx={{width:50, height:50, }}
           ></Avatar>
-          <Typography gutterBottom variant='body1'>
+          <Typography gutterBottom variant='body2'>
             
             {userID.slice(-6)} 
             
           </Typography>
         </Box>
         
-        <Box sx={{bgcolor:'#F3F0F7', width: '40%', p:1}} >
+        <Box sx={{bgcolor:'#F3F0F7', width: '80%', p:1}} >
+        <Box sx={{bgcolor:'#F3F0F7', width: '100%', p:1}} >
           <Typography gutterBottom variant="subtitle2" component="div">
             {subject}
           </Typography>         
@@ -57,7 +58,7 @@ export default function MessageDetailPrevMessage(props: any) {
           </Typography>
         </Box>
 
-        <Box sx={{bgcolor:'#F3F0F7', width: '40%', p:1}}>
+        <Box sx={{bgcolor:'#F3F0F7', width: '100%', p:1}}>
 
           <MessageSendBox
             chatID = {chatID}
@@ -67,7 +68,7 @@ export default function MessageDetailPrevMessage(props: any) {
           ></MessageSendBox>
 
         </Box>
-
+        </Box>
     </Card>
     
   );
