@@ -190,6 +190,7 @@ export default function SingleItem(props: SingleItemProps) {
           </Typography>
           <Divider variant='middle' sx={{ my: '1rem' }}></Divider>
           <Typography variant='body1'>{itemDesc}</Typography>
+          <br></br>
           {props.user?.payload['cognito:username'] == user && (
             <>
               <Button
