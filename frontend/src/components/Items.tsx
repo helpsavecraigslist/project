@@ -65,7 +65,7 @@ export default function Items() {
   return (
     <>
       <Grid container sx={{ m: 2 }} alignItems='center'>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={11} md={3}>
           <TextField
             id='search-by-tag'
             select
@@ -85,7 +85,7 @@ export default function Items() {
             })}
           </TextField>
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={11} md={3}>
           <TextField
             id='search-by-tag'
             select
@@ -105,7 +105,7 @@ export default function Items() {
             })}
           </TextField>
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={11} md={3}>
           <TextField
             id='sort-by-price'
             select
@@ -127,7 +127,7 @@ export default function Items() {
             })}
           </TextField>
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={11} md={3}>
           <TextField
             id='sort-by-date'
             select
@@ -149,7 +149,7 @@ export default function Items() {
             })}
           </TextField>
         </Grid>
-        <Grid item xs={12} md={2}>
+        <Grid item xs={5.5} md={2}>
           <TextField
             type='number'
             id='min-price'
@@ -163,7 +163,7 @@ export default function Items() {
             sx={{ mb: 1 }}
           />
         </Grid>
-        <Grid item xs={12} md={2}>
+        <Grid item xs={5.5} md={2}>
           <TextField
             type='number'
             id='max-price'
@@ -177,7 +177,7 @@ export default function Items() {
             sx={{ mb: 1 }}
           />
         </Grid>
-        <Grid item xs={12} md={5}>
+        <Grid item xs={11} md={5}>
           <TextField
             id='search-titles'
             label='Search Item Titles'
@@ -189,12 +189,13 @@ export default function Items() {
             sx={{ mb: 1 }}
           />
         </Grid>
-        <Grid item xs={12} md={1}>
+        <Grid item xs={11} md={1}>
           <Button
             variant='contained'
             color='secondary'
             size='small'
-            sx={{ mx: 1.5, p: 1.25, mb: 1 }}
+            fullWidth
+            sx={{ py: 1.25, mb: 1 }}
             onClick={() => {
               setSearchReady(true)
             }}
@@ -202,13 +203,13 @@ export default function Items() {
             Search
           </Button>
         </Grid>
-        <Grid item xs={12} md={2}>
+        <Grid item xs={11} md={2}>
           <Button
             variant='contained'
             color='secondary'
             size='small'
             fullWidth
-            sx={{ p: 1.25, mb: 1 }}
+            sx={{ py: 1.25, mb: 1 }}
             onClick={() => {
               setTagSearchSelection('')
               setLocationSearchSelection('')
