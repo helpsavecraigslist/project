@@ -7,7 +7,7 @@ import MessageSendBox from './MessageSendBox'
 
 
 export default function MessageDetailPrevMessage(props: any) {
-  const {chatID, userID, userAvatar, message, postedDate, subject} = props;
+  const {chatID, displayUserID, OtherUser, userAvatar, message, postedDate, subject} = props;
   return (
     
     <Card
@@ -33,14 +33,14 @@ export default function MessageDetailPrevMessage(props: any) {
           }} 
         >
           <Avatar 
-            alt={userID}
+            alt={displayUserID}
             src={userAvatar}
             variant='square' 
             sx={{width:50, height:50, }}
           ></Avatar>
           <Typography gutterBottom variant='body2'>
             
-            {userID.slice(-6)} 
+            {displayUserID} 
             
           </Typography>
         </Box>
@@ -62,6 +62,7 @@ export default function MessageDetailPrevMessage(props: any) {
 
           <MessageSendBox
             chatID = {chatID}
+            toUser = {OtherUser}
             subject = {subject}
             buttonText = "Reply"
             placeholder = "Write your reply here"

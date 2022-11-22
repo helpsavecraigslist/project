@@ -7,7 +7,7 @@ import { useState } from 'react'
 //adapted from https://mui.com/material-ui/react-grid/
 
 export default function MessageSendBox(props: any) {
-  const {chatID, subject, buttonText, placeholder} = props;
+  const {chatID, toUser, subject, buttonText, placeholder} = props;
   const [content, setContent] = useState('')
 
   const postNewMessage = async () => {
@@ -21,6 +21,7 @@ export default function MessageSendBox(props: any) {
       },
       body: {
         chat_id:chatID,
+        to_user:toUser,
         subject:subject,
         content,
       },

@@ -14,7 +14,8 @@ function bgColor(unread) {if (unread == 'True'){return '#D8CDE2';}return '#F3F0F
 export default function MessageItem(props: any) {
   const {
         chatID,
-        userID, 
+        displayUserID, 
+        otherUser,
         userAvatar, 
         subject, 
         recepient, 
@@ -49,13 +50,13 @@ export default function MessageItem(props: any) {
           }} 
         >
           <Avatar 
-            alt={userID}
+            alt={displayUserID}
             src={userAvatar}
             variant='square' 
             sx={{width:50, height:50, }}
           ></Avatar>
           <Typography gutterBottom variant='body1'>
-            {userID} 
+            {displayUserID} 
           </Typography>
       </Box>
         <Box sx={{
@@ -69,7 +70,7 @@ export default function MessageItem(props: any) {
 
           <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <Typography gutterBottom variant="body1" component="div">
-                <Link to='/messageDetail' state={{chatid:chatID}}> View all messages </Link>
+                <Link to='/messageDetail' state={{chatid:chatID, otheruser:otherUser}}> View all messages </Link>
               </Typography>
               {/* <Typography variant="body2" gutterBottom>
                 {userID}, {recepient} - {postedDate}

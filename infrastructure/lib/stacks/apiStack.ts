@@ -166,8 +166,19 @@ export class APIStack extends Stack {
       environment: {
         CHATS_TABLE: chatsDatabase.tableName,
         USERS_TABLE: usersDatabase.tableName,
+        USER_POOL_ID: pool.userPoolId,
       },
     })
+
+    messagesFunction.addToRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ['cognito-idp:*'],
+        resources: [
+          `arn:aws:cognito-idp:${pool.stack.region}:${pool.stack.account}:userpool/${pool.userPoolId}`,
+        ],
+      })
+    )
 
     const profileFunction = new Function(this, 'profileFunction', {
       code: Code.fromAsset('../backend'),
@@ -227,10 +238,6 @@ export class APIStack extends Stack {
         allowOrigins: ['*'],
         allowCredentials: true,
       },
-      // defaultMethodOptions: {
-      //   authorizationType: AuthorizationType.COGNITO,
-      //   authorizer: authorizer,
-      // },
     })
 
     items.addMethod('GET')
@@ -263,7 +270,6 @@ export class APIStack extends Stack {
 
     const messages_proxy = messages.addProxy({
       anyMethod: true,
-      // defaultMethodOptions: {authorizer},
     })
     messages_proxy.addMethod('POST', undefined, { authorizer })
     messages_proxy.addMethod('GET', undefined, { authorizer })

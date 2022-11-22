@@ -87,7 +87,8 @@ export default function MessageList() {
              <MessageItem
               key = {index}
               chatID = {chat.ChatID}
-              userID = {chat.OtherUserID.slice(-6)}
+              displayUserID = {(chat.preferred_username)? chat.preferred_username: chat.OtherUserID.slice(-6)}
+              otherUser = {chat.OtherUserID}
               userAvatar = {'string'}
               subject = {'subjectwhat'}
               ></MessageItem>

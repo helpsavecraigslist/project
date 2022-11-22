@@ -6,7 +6,6 @@ import MessageDetailHeader from './MessageDetailHeader'
 // import MessageSendBox from './MessageSendBox'
 import MessageDetailPrevMessage from './MessageDetailPrevMessage'
 
-
 export default function MessageDetail() {
   const location = useLocation()
   const [AllMessages, setAllMessages] = useState([])
@@ -45,7 +44,8 @@ export default function MessageDetail() {
                 <MessageDetailPrevMessage 
                   key = {index}
                   chatID = {message.ChatID}
-                  userID = {message.FromUser}
+                  displayUserID = {(message.preferred_username)? message.preferred_username: message.FromUser.slice(-6)}
+                  OtherUser = {location.state.otheruser}
                   userAvatar = {"string"}
                   message = {message.Content}
                   postedDate = {message.PostedDate.slice(0, 19)}
