@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Profile from './components/Profile'
 import Items from './components/Items'
-import { Amplify, Auth } from 'aws-amplify'
+import { Amplify, Auth, API } from 'aws-amplify'
 import { CognitoIdToken } from 'amazon-cognito-identity-js'
 import settings from './aws-settings.json'
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
@@ -55,6 +55,7 @@ Amplify.configure({
 
 const App = () => {
   const [user, setUser] = useState<null | CognitoIdToken>(null)
+  const [unread, setUnread] = useState(0)
 
   const getCurrentUser = async () => {
     try {
@@ -64,8 +65,29 @@ const App = () => {
       setUser(null)
     }
   }
+
+  const fetchUnread = async () => {
+    // setUnread(45)
+    const apiName = 'default'
+    const path = 'messages/unread'
+    const myInit = {
+      headers: {
+        Authorization: `Bearer ${(await Auth.currentSession())
+          .getIdToken()
+          .getJwtToken()}`,
+      },
+    }
+    try {
+      const response = await API.get(apiName, path, myInit)
+      setUnread(response.Unread)
+    } catch {
+      console.error('Error fetching unread')
+    }
+  }
+
   useEffect(() => {
     getCurrentUser()
+    fetchUnread()
   }, [])
 
   console.log(user)
@@ -75,7 +97,7 @@ const App = () => {
       <ThemeProvider theme={appTheme}>
         <Container>
           <BrowserRouter>
-            <NavBar user={user} />
+            <NavBar user={user} unread={unread} />
             <Toolbar />
             <Routes>
               <Route path='/' element={<Navigate to='/items' />} />

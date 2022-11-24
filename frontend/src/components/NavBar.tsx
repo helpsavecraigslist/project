@@ -1,5 +1,10 @@
 // import * as React from 'react'
 import { useEffect, useState } from 'react'
+import ReactDOM from 'react-dom'
+// import * as ReactDOM from 'react-dom';
+// var ReactDOM = require('react-dom');
+
+
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -12,7 +17,8 @@ import Badge from '@mui/material/Badge';
 import MailIcon from '@mui/icons-material/Mail';
 import { Link } from 'react-router-dom'
 interface NavBarProps {
-  user: null | CognitoIdToken
+  user: null | CognitoIdToken;
+  unread: number;
 }
 
 {/* 
@@ -23,30 +29,31 @@ interface NavBarProps {
 // Adapted from source code in Material UI Component Documentation
 // https://mui.com/material-ui/react-app-bar/
 export default function NavBar(props: NavBarProps) {
-  const [Unread, setUnread] = useState(0)
+  // const [Unread, setUnread] = useState(0)
 
-  const fetchUnread = async () => {
-    // setUnread(45)
-    const apiName = 'default'
-    const path = 'messages/unread'
-    const myInit = {
-      headers: {
-        Authorization: `Bearer ${(await Auth.currentSession())
-          .getIdToken()
-          .getJwtToken()}`,
-      },
-    }
-    try {
-      const response = await API.get(apiName, path, myInit)
-      setUnread(response.Unread)
-    } catch {
-      console.error('Error fetching message detail')
-    }
-  }
+  // const fetchUnread = async () => {
+  //   // setUnread(45)
+  //   const apiName = 'default'
+  //   const path = 'messages/unread'
+  //   const myInit = {
+  //     headers: {
+  //       Authorization: `Bearer ${(await Auth.currentSession())
+  //         .getIdToken()
+  //         .getJwtToken()}`,
+  //     },
+  //   }
+  //   try {
+  //     const response = await API.get(apiName, path, myInit)
+  //     setUnread(response.Unread)
+  //   } catch {
+  //     console.error('Error fetching message detail')
+  //   }
+  // }
  
-  useEffect(() => {
-    fetchUnread()
-  }, [])
+  // useEffect(() => {
+  //   fetchUnread()
+  // }, [])
+
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -57,7 +64,7 @@ export default function NavBar(props: NavBarProps) {
             help save craigslist
           </Typography>
           {props.user && (
-            <Badge badgeContent={Unread} color="primary" showZero component={Link} to='/messages'> 
+            <Badge badgeContent={props.unread} color="primary" showZero component={Link} to='/messages'> 
               <MailIcon color="secondary" />
             </Badge>
           )}
