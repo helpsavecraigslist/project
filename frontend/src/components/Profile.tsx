@@ -66,7 +66,10 @@ const Profile = (props: ProfileProps) => {
           <CardMedia
             component='img'
             height='100%'
-            image={props.user.payload.picture}
+            image={
+              props.user.payload.picture ||
+              'https://lh3.googleusercontent.com/a/ALm5wu0sHze805Q-vC_5P0mdvZqLIEE_GMvsDkM07m7Saw=s96-c'
+            }
             alt='profile photo'
             referrerPolicy='no-referrer'
           />
