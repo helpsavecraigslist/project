@@ -14,6 +14,10 @@ Email: lipej@oregonstate.edu
 
 Password: Testing123
 
+# Application Architecture
+
+![image](https://user-images.githubusercontent.com/16655939/207387123-e14306ce-4041-4e18-989c-40e25026b9da.png)
+
 # Installation - First Time Setup
 
 **Note: the source code is located [here](https://github.com/helpsavecraigslist/project)**
