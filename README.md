@@ -1,11 +1,5 @@
 # Instructions for Testing
 
-To homepage takes you to the all items page and you can view all items when not logged in. Click "login" in the top right corner of the screen to login. This will allow you to create an account with an email and password, or login with Google. Once logged in you can open the menu and go to the page to post an item. This form allows you to uplod an image (jpeg and under 3MB), once uploaded you can view it in the all items page.
-
-On the all items page, you can click "view details" to see a single item view. On the single item view you will see a "delete" and "edit" button if the item belongs to the currently signed in user. Clicking delete will remove the item from the database as well as remove the image from the S3 bucket. Clicking "edit" will bring you to a form pre-populated with the data from the item that is being edited.
-
-From the all-items page or single-item view, click "Message Seller" or the mail icon, and the link will take you to a new message screen. Compose a message, on the new message screen, to the seller and click "Start Messaging." Presented with the message detail screen, you can view all message traffic sent. From the menu or the message detail screen, selecting "Messages" will direct to the user's inbox. Click a message to view the entire conversation. The user can also click the mail icon in the upper right, on the navigation bar, to view their inbox.  
-
 You can view our hosted website here [https://d198vhptcel5q3.cloudfront.net/](https://d198vhptcel5q3.cloudfront.net/)
 
 Login with your Gmail account, create an account, or login with these credentials here.
